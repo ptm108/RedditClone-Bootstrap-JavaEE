@@ -27,7 +27,7 @@ public interface RedditSessionLocal {
 
   public Redditor getRedditor(String username) throws NotFoundException;
 
-  public void createCommunity(Community c);
+  public Community createCommunity(Community c);
 
   public void updateCommunity(Community c) throws NotFoundException;
 

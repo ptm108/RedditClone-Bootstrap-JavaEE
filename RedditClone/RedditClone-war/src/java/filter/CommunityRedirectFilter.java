@@ -31,12 +31,12 @@ public class CommunityRedirectFilter implements Filter {
     String[] uri = req.getRequestURI().split("/");
 
     String c = uri[uri.length - 1];
+    req.setAttribute("cName", c);
 
     if (!req.getRequestURI().equals("/RedditClone-war/r/CommunityPage.xhtml")) {
-      req.setAttribute("cName", c);
       req.getRequestDispatcher("CommunityPage.xhtml").forward(req, response);
     } else {
-      chain.doFilter(request, response);
+      chain.doFilter(req, response);
     }
 
   }

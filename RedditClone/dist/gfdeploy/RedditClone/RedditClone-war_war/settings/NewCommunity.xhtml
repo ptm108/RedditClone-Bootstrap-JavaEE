@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="title">
+    Create Community
+  </ui:define>
+
+  <ui:define name="cName">
+    <h:outputText value="r/#{requestScope.cName}"/>
+  </ui:define>
+
+  <ui:define name="content">
+    <div class="p-grid">
+      <div class="p-col-6 p-offset-3">
+        <h:form>
+          <p:panel id="register" header="Create New Community">
+            <div class="ui-fluid">
+              <div class="p-field">
+                <p:outputLabel for="name" value="Name: " />
+                <p:inputText id="name"
+                             value="#{communityManagedBean.cName}"
+                             required="true"/>
+                <small id="name-help">Community names including capitalization cannot be changed.</small>
+              </div>
+              <div class="p-field">
+                <p:outputLabel for="description" value="Description " />
+                <p:inputTextarea id="description"
+                                 value="#{communityManagedBean.description}"
+                                 rows="4"/>
+                <small id="description-help">This is how new members come to understand your community.</small>
+              </div>
+            </div>
+
+            <p:commandButton value="Create Community"
+                             action="#{communityManagedBean.createCommunity}"
+                             update="growl"/>
+          </p:panel>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+</ui:composition>

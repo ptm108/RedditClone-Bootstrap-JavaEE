@@ -71,8 +71,9 @@ public class RedditSession implements RedditSessionLocal {
   } //end getRedditor
 
   @Override
-  public void createCommunity(Community c) {
+  public Community createCommunity(Community c) {
     em.persist(c);
+    return c;
   }
 
   @Override
@@ -83,7 +84,6 @@ public class RedditSession implements RedditSessionLocal {
       currCommunity.setMembers(c.getMembers());
       currCommunity.setName(c.getName());
       currCommunity.setDescription(c.getDescription());
-      currCommunity.setTitle(c.getTitle());
       currCommunity.setPosts(c.getPosts());
     } else {
       throw new NotFoundException("Not found");
