@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+  <h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <h:outputStylesheet name="css/primeflex.css" />
+    <title><ui:insert name="title">Reddit</ui:insert></title>
+    <h:outputStylesheet name="css/cssLayout.css"/>
+    <h:outputStylesheet name="css/default.css"/>
+  </h:head>
+
+  <h:body>
+    <p:growl id="growl" showDetail="true" globalOnly="true"/>
+    <h:form id="navbar">
+      <p:menubar style="padding: 5px">
+        <p:menuitem url="/RedditClone-war/" icon="fa fa-fw fa-reddit">
+          <h1>Reddit <ui:insert name="cName" /></h1>
+        </p:menuitem>
+        <c:if test="#{authenticationManagedBean.rId ge 0}">
+          <p:submenu label="#{authenticationManagedBean.displayName}"
+                     style="float: right; border: 1px solid #dedede; border-radius: 5px; margin: 0 10px;">
+            <p:menuitem value="Profile" url="/RedditClone-war/profile.xhtml" />
+            <p:separator />
+            <p:menuitem value="Settings" url="/RedditClone-war/settings/userSettings.xhtml" />
+            <p:separator />
+            <p:menuitem value="Logout" icon="pi pi-power-off"
+                        style="background-color: #c40000;"
+                        action="#{authenticationManagedBean.logout}"/>
+          </p:submenu>
+        </c:if>
+        <f:facet name="options">
+          <c:if test="#{authenticationManagedBean.rId lt 0}">
+            <p:linkButton outcome="/login.xhtml" value="Login"
+                          style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px;"/>
+            <p:linkButton outcome="/register.xhtml" value="Register"
+                          style="margin: 0 5px"/>
+          </c:if>
+        </f:facet>
+      </p:menubar>
+    </h:form>
+
+    <div id="content" class="center_content">
+      <ui:insert name="content" />
+    </div>
+
+    <div id="community" class="center_content">
+      <ui:insert name="community" />
+    </div>
+
+  </h:body>
+
+</html>
