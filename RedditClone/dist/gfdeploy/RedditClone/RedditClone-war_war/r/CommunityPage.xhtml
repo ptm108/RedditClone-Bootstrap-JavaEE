@@ -10,20 +10,62 @@
   <ui:define name="title"><h:outputText value="r/#{requestScope.cName}"/></ui:define>
   <ui:define name="cName"><h:outputText value="r/#{requestScope.cName}"/></ui:define>
   <ui:define name="community">
-    <c:if test="#{communityManagedBean.cId lt 0}">
-      <div class="p-grid">
-        <div class="p-col-8" style="text-align: center; margin: 80px auto; max-width: 500px">
-          <h1>There aren't any communities with that name</h1><br/>
-          <h3>This community may have been banned or the community name is incorrect.</h3>
-          <div style="display: flex; margin: 40px 0 0;">
-            <p:linkButton href="/RedditClone-war/settings/NewCommunity.xhtml" value="Create New Community"
-                          style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; flex-grow: 4"/>
-            <p:linkButton href="/RedditClone-war/" value="Go Home"
-                          style="margin: 0 5px; flex-grow: 1"/>
+    <c:choose>
+      <c:when test="#{communityManagedBean.cId lt 0}">
+        <div class="p-grid">
+          <div class="p-col-8" style="text-align: center; margin: 80px auto; max-width: 500px">
+            <h1>There aren't any communities with that name</h1><br/>
+            <h3>This community may have been banned or the community name is incorrect.</h3>
+            <div style="display: flex; margin: 40px 0 0;">
+              <p:linkButton href="/RedditClone-war/settings/NewCommunity.xhtml" value="Create New Community"
+                            style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; flex-grow: 4"/>
+              <p:linkButton href="/RedditClone-war/" value="Go Home"
+                            style="margin: 0 5px; flex-grow: 1"/>
+            </div>
           </div>
         </div>
-      </div>
-    </c:if>
+      </c:when>
+      <c:otherwise>
+        <h:form id="header">
+          <div id="image" style="background-color: rgb(31,126,208); height: 80px; margin-top: -12px;" />
+          <div class="p-grid p-justify-center" style="background-color: rgb(6,6,6); height: 80px; margin-bottom: 12px;">
+            <div class="p-col-10" style="display: flex; justify-content: space-between">
+              <div>
+                <h1 style="margin: 5px 0; font-size: 25px"><h:outputText value="#{communityManagedBean.title}"/></h1>
+                <h4 style="margin: 5px 0"><h:outputText value="r/#{communityManagedBean.cName}"/></h4>
+              </div>
+              <div>
+                <p:linkButton value="Create Post"
+                              href="RedditClone-war/settings/createPost.xhtml"
+                              style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px; align-self: center"/>
+                <c:choose>
+                  <c:when test="#{communityManagedBean.joined}">
+                    <p:commandButton value="Leave"
+                                     action="#{communityManagedBean.leaveCommunity}"
+                                     update=":header"
+                                     style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px; align-self: center"/>
+                  </c:when>
+                  <c:otherwise>
+                    <p:commandButton value="Join"
+                                     action="#{communityManagedBean.joinCommunity}"
+                                     update=":header"
+                                     style="margin: 0 5px; max-height: 32px; min-width: 120px; align-self: center"/>
+                  </c:otherwise>
+                </c:choose>
+              </div>
+            </div>
+          </div>
+        </h:form>
+        <div class="p-grid p-justify-center">
+          <div class="p-col-8">
+            <div class="box">8</div>
+          </div>
+          <div class="p-col-2">
+            <div class="box">2</div>
+          </div>
+        </div>
+      </c:otherwise>
+    </c:choose>
   </ui:define>
 
 </ui:composition>

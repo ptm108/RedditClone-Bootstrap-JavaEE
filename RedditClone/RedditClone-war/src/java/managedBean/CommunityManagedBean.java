@@ -33,8 +33,11 @@ public class CommunityManagedBean implements Serializable {
   private Long cId = new Long(-1);
   private String cName;
   private String description = "";
+  private String title;
   private List<Post> posts;
   private List<Redditor> members;
+
+  private boolean joined = false;
 
   @EJB
   private RedditSessionLocal redditSessionLocal;
@@ -54,43 +57,118 @@ public class CommunityManagedBean implements Serializable {
     HttpServletRequest req = (HttpServletRequest) ec.getRequest();
 
     try {
+      // get community name from url path
+      // r/<cName>
       cName = req.getAttribute("cName").toString();
 
       Community c = redditSessionLocal.getCommunity(cName);
       cId = c.getId();
+      title = c.getTitle();
+      description = c.getDescription();
       posts = c.getPosts();
       members = c.getMembers();
+
+      // check if current user is member already
+      Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+
+      joined = members.contains(currRedditor);
+
     } catch (Exception e) {
       // do nothing
     }
   } //end init
 
-  public String createCommunity() {
+  public void createCommunity() {
     FacesContext context = FacesContext.getCurrentInstance();
-    context.getExternalContext().getFlash().setKeepMessages(true);
+    ExternalContext ec = context.getExternalContext();
+    ec.getFlash().setKeepMessages(true);
 
     try {
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
 
       Community c = new Community();
       c.setName(cName);
+      c.setTitle(cName);
       c.setDescription(description);
       c.setPosts(new ArrayList<>());
 
       members = new ArrayList<>();
       members.add(currRedditor);
       c.setMembers(members);
+      c.setModerators(members);
 
       Community newC = redditSessionLocal.createCommunity(c);
+
+      // add community to redditor side
       currRedditor.addCommunity(newC);
+      redditSessionLocal.updateRedditor(currRedditor);
 
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Community created"));
-      return "/RedditClone-war/r/" + cName;
+      ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  } //end createCommunity
+
+  public String joinCommunity() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    context.getExternalContext().getFlash().setKeepMessages(true);
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      return "/login.xhtml/faces-redirect=true";
+    }
+
+    try {
+      Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+      Community c = redditSessionLocal.getCommunity(cId);
+      c.addMember(currRedditor);
+
+      // add user to community side
+      Community newC = redditSessionLocal.updateCommunity(c);
+
+      // add community to redditor side
+      currRedditor.addCommunity(newC);
+      redditSessionLocal.updateRedditor(currRedditor);
+
+      joined = true;
+
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Joined " + cName));
+      return null;
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
       return null;
     }
-  } //end createCommunity
+  } // end joinCommunity
+
+  public String leaveCommunity() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    context.getExternalContext().getFlash().setKeepMessages(true);
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      return "/login.xhtml/faces-redirect=true";
+    }
+
+    try {
+      Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+      Community c = redditSessionLocal.getCommunity(cId);
+      c.removeMember(currRedditor);
+
+      // remove user on community side
+      Community newC = redditSessionLocal.updateCommunity(c);
+
+      // remove community on redditor side
+      currRedditor.removeCommunity(newC);
+      redditSessionLocal.updateRedditor(currRedditor);
+
+      joined = false;
+
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Joined " + cName));
+      return null;
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+      return null;
+    }
+  }
 
   public String getcName() {
     return cName;
@@ -138,6 +216,22 @@ public class CommunityManagedBean implements Serializable {
 
   public void setMembers(List<Redditor> members) {
     this.members = members;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public boolean isJoined() {
+    return joined;
+  }
+
+  public void setJoined(boolean joined) {
+    this.joined = joined;
   }
 
 }

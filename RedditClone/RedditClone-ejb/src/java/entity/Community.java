@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -29,14 +31,32 @@ public class Community implements Serializable {
 
   @Column(unique = true)
   private String name;
+  private String title;
   private String description;
 
   @ManyToMany
+  @JoinTable(name = "member_community", joinColumns = @JoinColumn(name = "member_id"),
+          inverseJoinColumns = @JoinColumn(name = "community_id"))
   private List<Redditor> members;
+
+  @ManyToMany
+  @JoinTable(name = "moderator_community", joinColumns = @JoinColumn(name = "moderator_id"),
+          inverseJoinColumns = @JoinColumn(name = "community_id"))
+  private List<Redditor> moderators;
 
   @OneToMany(mappedBy = "community")
   private List<Post> posts;
 
+  // helper methods
+  public void addMember(Redditor r) {
+    this.members.add(r);
+  }
+
+  public void removeMember(Redditor r) {
+    this.members.remove(r);
+  }
+
+  // getters and setters
   public String getName() {
     return name;
   }
@@ -75,6 +95,22 @@ public class Community implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public List<Redditor> getModerators() {
+    return moderators;
+  }
+
+  public void setModerators(List<Redditor> moderators) {
+    this.moderators = moderators;
   }
 
   @Override

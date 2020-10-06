@@ -14,6 +14,14 @@ h1 {
   padding: 0px;
 }
 
+h4 {
+  font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+  font-size:  12px;
+  font-weight: normal;
+  margin: 5px 0;
+  padding: 0px;
+}
+
 a:link, a:visited {
   color: #045491;
   text-decoration: none;

@@ -51,8 +51,8 @@ public class RedditSession implements RedditSessionLocal {
   public Redditor getRedditor(String username) throws NotFoundException {
     Query q;
     if (username != null) {
-      q = em.createQuery("SELECT r FROM Redditor r WHERE LOWER(r.username) LIKE :username");
-      q.setParameter("username", "%" + username.toLowerCase() + "%");
+      q = em.createQuery("SELECT r FROM Redditor r WHERE LOWER(r.username) = :username");
+      q.setParameter("username", username.toLowerCase());
       return (Redditor) q.getSingleResult();
     } else {
       throw new NotFoundException("Redditor not found");
@@ -77,14 +77,16 @@ public class RedditSession implements RedditSessionLocal {
   }
 
   @Override
-  public void updateCommunity(Community c) throws NotFoundException {
+  public Community updateCommunity(Community c) throws NotFoundException {
     Community currCommunity = em.find(Community.class, c.getId());
 
     if (currCommunity != null) {
       currCommunity.setMembers(c.getMembers());
       currCommunity.setName(c.getName());
       currCommunity.setDescription(c.getDescription());
+      currCommunity.setTitle(c.getTitle());
       currCommunity.setPosts(c.getPosts());
+      return currCommunity;
     } else {
       throw new NotFoundException("Not found");
     }
@@ -94,8 +96,8 @@ public class RedditSession implements RedditSessionLocal {
   public Community getCommunity(String cName) throws NotFoundException {
     Query q;
     if (cName != null) {
-      q = em.createQuery("SELECT c FROM Community c WHERE LOWER(c.name) LIKE :name");
-      q.setParameter("name", "%" + cName.toLowerCase() + "%");
+      q = em.createQuery("SELECT c FROM Community c WHERE LOWER(c.name) = :name");
+      q.setParameter("name", cName.toLowerCase());
       return (Community) q.getSingleResult();
     } else {
       throw new NotFoundException("Redditor not found");

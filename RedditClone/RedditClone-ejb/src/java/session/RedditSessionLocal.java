@@ -29,7 +29,7 @@ public interface RedditSessionLocal {
 
   public Community createCommunity(Community c);
 
-  public void updateCommunity(Community c) throws NotFoundException;
+  public Community updateCommunity(Community c) throws NotFoundException;
 
   public Community getCommunity(String cName) throws NotFoundException;
 
