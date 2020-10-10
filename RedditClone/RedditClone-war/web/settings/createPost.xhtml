@@ -7,6 +7,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+  <ui:param name="cName" value="r/#{param.cName}" />
+
   <ui:define name="title">
     Reddit Create Post
   </ui:define>
@@ -43,8 +45,7 @@
               <div style="display: flex; justify-content: center">
                 <p:commandButton value="Submit Post"
                                  action="#{postManagedBean.createPost}"
-                                 update="growl"
-                                 onclick="window.history.back()">
+                                 update="growl">
                   <f:param name="cName" value="#{param.cName}" />
                 </p:commandButton>
               </div>

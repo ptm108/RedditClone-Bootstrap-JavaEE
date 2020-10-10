@@ -41,7 +41,6 @@ public class RedditSession implements RedditSessionLocal {
       currRedditor.setAbout(r.getAbout());
       currRedditor.setCommunities(r.getCommunities());
       currRedditor.setPosts(r.getPosts());
-      em.flush();
     } else {
       throw new NotFoundException("Not found");
     }

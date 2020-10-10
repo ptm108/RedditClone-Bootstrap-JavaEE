@@ -56,6 +56,8 @@ public class CommunityManagedBean implements Serializable {
     ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
     HttpServletRequest req = (HttpServletRequest) ec.getRequest();
 
+    FacesContext context = FacesContext.getCurrentInstance();
+
     try {
       // get community name from url path
       // r/<cName>
@@ -82,7 +84,6 @@ public class CommunityManagedBean implements Serializable {
   public void createCommunity() {
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();
-    ec.getFlash().setKeepMessages(true);
 
     try {
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
@@ -102,7 +103,6 @@ public class CommunityManagedBean implements Serializable {
 
       // add community to redditor side
       currRedditor.addCommunity(newC);
-      redditSessionLocal.updateRedditor(currRedditor);
 
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Community created"));
       ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
@@ -113,7 +113,6 @@ public class CommunityManagedBean implements Serializable {
 
   public String joinCommunity() {
     FacesContext context = FacesContext.getCurrentInstance();
-    context.getExternalContext().getFlash().setKeepMessages(true);
 
     if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
       return "/login.xhtml/faces-redirect=true";
@@ -129,7 +128,6 @@ public class CommunityManagedBean implements Serializable {
 
       // add community to redditor side
       currRedditor.addCommunity(newC);
-      redditSessionLocal.updateRedditor(currRedditor);
 
       joined = true;
 
@@ -159,7 +157,6 @@ public class CommunityManagedBean implements Serializable {
 
       // remove community on redditor side
       currRedditor.removeCommunity(newC);
-      redditSessionLocal.updateRedditor(currRedditor);
 
       joined = false;
 

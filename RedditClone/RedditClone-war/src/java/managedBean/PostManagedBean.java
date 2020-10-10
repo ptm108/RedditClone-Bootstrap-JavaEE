@@ -9,6 +9,7 @@ import entity.Community;
 import entity.Post;
 import entity.Redditor;
 import exception.NotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,14 +30,14 @@ import session.RedditSessionLocal;
 @Named(value = "postManagedBean")
 @ViewScoped
 public class PostManagedBean implements Serializable {
-
+  
   private String title;
   private String body;
   private String cName;
-
+  
   @EJB
   private RedditSessionLocal redditSessionLocal;
-
+  
   @Inject
   private AuthenticationManagedBean authenticationManagedBean;
 
@@ -45,19 +46,18 @@ public class PostManagedBean implements Serializable {
    */
   public PostManagedBean() {
   }
-
-  public void createPost() {
+  
+  public void createPost() throws IOException {
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();
-    ec.getFlash().setKeepMessages(true);
-
+    
     Map<String, String> params = ec.getRequestParameterMap();
     this.cName = params.get("cName");
-
+    
     try {
       Community c = redditSessionLocal.getCommunity(cName);
       Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
-
+      
       Post p = new Post();
       p.setAuthor(r);
       p.setCommunity(c);
@@ -68,7 +68,7 @@ public class PostManagedBean implements Serializable {
       p.setComments(new ArrayList<>());
       p.setUpvoters(new ArrayList<>());
       p.setDownvoters(new ArrayList<>());
-
+      
       redditSessionLocal.createPost(p);
 
       // update community
@@ -77,37 +77,39 @@ public class PostManagedBean implements Serializable {
 
       // update redditor
       r.addPost(p);
-      redditSessionLocal.updateRedditor(r);
-
+      
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Post created"));
+
+      // redirect back to subreddit
+      ec.redirect("/RedditClone-war/r/" + cName);
     } catch (NotFoundException e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
-
+    
   }
-
+  
   public String getTitle() {
     return title;
   }
-
+  
   public void setTitle(String title) {
     this.title = title;
   }
-
+  
   public String getBody() {
     return body;
   }
-
+  
   public void setBody(String body) {
     this.body = body;
   }
-
+  
   public String getcName() {
     return cName;
   }
-
+  
   public void setcName(String cName) {
     this.cName = cName;
   }
-
+  
 }

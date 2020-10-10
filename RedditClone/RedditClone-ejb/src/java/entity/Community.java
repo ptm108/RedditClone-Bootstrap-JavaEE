@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 /**
  *
@@ -35,16 +36,17 @@ public class Community implements Serializable {
   private String description;
 
   @ManyToMany
-  @JoinTable(name = "member_community", joinColumns = @JoinColumn(name = "member_id"),
-          inverseJoinColumns = @JoinColumn(name = "community_id"))
+  @JoinTable(name = "member_community", joinColumns = @JoinColumn(name = "community_id"),
+          inverseJoinColumns = @JoinColumn(name = "member_id"))
   private List<Redditor> members;
 
   @ManyToMany
-  @JoinTable(name = "moderator_community", joinColumns = @JoinColumn(name = "moderator_id"),
-          inverseJoinColumns = @JoinColumn(name = "community_id"))
+  @JoinTable(name = "moderator_community", joinColumns = @JoinColumn(name = "community_id"),
+          inverseJoinColumns = @JoinColumn(name = "moderator_id"))
   private List<Redditor> moderators;
 
   @OneToMany(mappedBy = "community")
+  @OrderBy("timeCreated DESC")
   private List<Post> posts;
 
   // helper methods
@@ -57,7 +59,7 @@ public class Community implements Serializable {
   }
 
   public void addPost(Post p) {
-    this.posts.add(p);
+    this.posts.add(0, p);
   }
 
   public void removePost(Post p) {
