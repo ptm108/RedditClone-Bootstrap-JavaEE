@@ -62,7 +62,7 @@
           </div>
         </h:form>
         <div class="p-grid p-justify-center">
-          <div class="p-col-8 p-md-10">
+          <div class="p-col-7 p-md-10">
             <ui:repeat value="#{communityManagedBean.posts}" var="post">
               <div class="post">
                 <div class="vote">up/down</div>
@@ -75,8 +75,21 @@
               </div>
             </ui:repeat>
           </div>
-          <div class="p-col-2 p-d-md-none">
-            <div class="box">2</div>
+          <div class="p-col-3 p-d-md-none">
+            <p:panel id="info-panel" style="margin-bottom:20px">
+              <f:facet name="header">
+                <h2 style="margin: 0">r/#{communityManagedBean.cName}</h2>
+              </f:facet>
+
+              <h:panelGrid>
+                Description:<br />
+                #{communityManagedBean.description}
+              </h:panelGrid>
+
+              <f:facet name="footer">
+                <h:outputText value="#{communityManagedBean.members.size()} members" />
+              </f:facet>
+            </p:panel>
           </div>
         </div>
       </c:otherwise>

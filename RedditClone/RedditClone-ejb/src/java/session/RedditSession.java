@@ -144,12 +144,47 @@ public class RedditSession implements RedditSessionLocal {
 
   @Override
   public Post upvotePost(Long rId, Long pId) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Post currPost = em.find(Post.class, pId);
+    Redditor currRedditor = em.find(Redditor.class, rId);
+
+    if (currPost != null && currRedditor != null) {
+      currPost.upvote(currRedditor);
+      currRedditor.upvote(currPost);
+    } else {
+      throw new NotFoundException("Post or redditor not found");
+    }
+
+    return currPost;
   }
 
   @Override
   public Post downVotePost(Long rId, Long pId) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Post currPost = em.find(Post.class, pId);
+    Redditor currRedditor = em.find(Redditor.class, rId);
+
+    if (currPost != null && currRedditor != null) {
+      currPost.downvote(currRedditor);
+      currRedditor.downvote(currPost);
+    } else {
+      throw new NotFoundException("Post or redditor not found");
+    }
+
+    return currPost;
+  }
+
+  @Override
+  public Post removeVote(Long rId, Long pId) throws NotFoundException {
+    Post currPost = em.find(Post.class, pId);
+    Redditor currRedditor = em.find(Redditor.class, rId);
+
+    if (currPost != null && currRedditor != null) {
+      currPost.removeVote(currRedditor);
+      currRedditor.removeVote(currPost);
+    } else {
+      throw new NotFoundException("Post or redditor not found");
+    }
+
+    return currPost;
   }
 
   @Override

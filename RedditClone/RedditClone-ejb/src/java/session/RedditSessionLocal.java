@@ -45,6 +45,8 @@ public interface RedditSessionLocal {
 
   public Post downVotePost(Long rId, Long pId) throws NotFoundException;
 
+  public Post removeVote(Long rId, Long pId) throws NotFoundException;
+
   public void createComment(Long rId, Long pId, Comment c) throws NotFoundException;
 
   public void replyComment(Long cId, Comment c) throws NotFoundException;

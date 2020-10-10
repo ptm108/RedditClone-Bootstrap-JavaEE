@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -51,8 +53,13 @@ public class Redditor implements Serializable {
   private List<Post> posts;
 
   @ManyToMany
+  @JoinTable(name = "upvote_redditor", joinColumns = @JoinColumn(name = "redditor_id"),
+          inverseJoinColumns = @JoinColumn(name = "post_id"))
   private List<Post> upvotedPosts;
   @ManyToMany
+
+  @JoinTable(name = "downvote_redditor", joinColumns = @JoinColumn(name = "redditor_id"),
+          inverseJoinColumns = @JoinColumn(name = "post_id"))
   private List<Post> downvotedPosts;
 
   // helper methods
@@ -70,6 +77,21 @@ public class Redditor implements Serializable {
 
   public void deletePost(Post p) {
     this.posts.remove(p);
+  }
+
+  public void upvote(Post p) {
+    this.downvotedPosts.remove(p);
+    this.upvotedPosts.add(p);
+  }
+
+  public void downvote(Post p) {
+    this.upvotedPosts.remove(p);
+    this.downvotedPosts.add(p);
+  }
+
+  public void removeVote(Post p) {
+    this.upvotedPosts.remove(p);
+    this.downvotedPosts.remove(p);
   }
 
   // getters and setters

@@ -53,6 +53,23 @@ public class Post implements Serializable {
   @ManyToMany(mappedBy = "downvotedPosts")
   private List<Redditor> downvoters;
 
+  // helper methods
+  public void upvote(Redditor r) {
+    this.downvoters.remove(r);
+    this.upvoters.add(r);
+  }
+
+  public void downvote(Redditor r) {
+    this.upvoters.remove(r);
+    this.downvoters.add(r);
+  }
+
+  public void removeVote(Redditor r) {
+    this.upvoters.remove(r);
+    this.downvoters.remove(r);
+  }
+
+  // getters setters
   public String getTitle() {
     return title;
   }

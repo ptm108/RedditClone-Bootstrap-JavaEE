@@ -69,7 +69,10 @@ public class CommunityManagedBean implements Serializable {
       description = c.getDescription();
       posts = c.getPosts();
       members = c.getMembers();
+
+      // eager fetch
       posts.size();
+      members.size();
 
       // check if current user is member already
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
@@ -230,6 +233,10 @@ public class CommunityManagedBean implements Serializable {
 
   public void setJoined(boolean joined) {
     this.joined = joined;
+  }
+
+  public int getNumMembers() {
+    return this.members.size();
   }
 
 }
