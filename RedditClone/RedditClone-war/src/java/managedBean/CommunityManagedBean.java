@@ -67,6 +67,7 @@ public class CommunityManagedBean implements Serializable {
       description = c.getDescription();
       posts = c.getPosts();
       members = c.getMembers();
+      posts.size();
 
       // check if current user is member already
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());

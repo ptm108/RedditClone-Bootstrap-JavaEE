@@ -35,15 +35,15 @@ public interface RedditSessionLocal {
 
   public Community getCommunity(Long cId) throws NotFoundException;
 
-  public void createPost(Post p);
+  public Post createPost(Post p);
 
-  public void updatePost(Post p);
+  public Post updatePost(Post p) throws NotFoundException;
 
-  public Post deletePost(Long pId);
+  public Post deletePost(Long pId) throws NotFoundException;
 
-  public void upvotePost(Long rId, Long pId) throws NotFoundException;
+  public Post upvotePost(Long rId, Long pId) throws NotFoundException;
 
-  public void downVotePost(Long rId, Long pId) throws NotFoundException;
+  public Post downVotePost(Long rId, Long pId) throws NotFoundException;
 
   public void createComment(Long rId, Long pId, Comment c) throws NotFoundException;
 

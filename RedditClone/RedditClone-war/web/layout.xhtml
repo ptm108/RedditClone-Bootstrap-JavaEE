@@ -10,7 +10,7 @@
   <h:head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <h:outputStylesheet name="css/primeflex.css" />
-    <title><ui:insert name="title">Reddit</ui:insert></title>
+    <title><ui:insert name="title">reddit</ui:insert></title>
     <h:outputStylesheet name="css/cssLayout.css"/>
     <h:outputStylesheet name="css/default.css"/>
   </h:head>
@@ -20,7 +20,7 @@
     <h:form id="navbar">
       <p:menubar style="padding: 5px">
         <p:menuitem url="/RedditClone-war/" icon="fa fa-fw fa-reddit">
-          <h1>Reddit <ui:insert name="cName" /></h1>
+          <h1>reddit <sub style="font-weight: normal"><ui:insert name="cName"/></sub></h1>
         </p:menuitem>
         <c:if test="#{authenticationManagedBean.rId ge 0}">
           <p:submenu label="#{authenticationManagedBean.displayName}"

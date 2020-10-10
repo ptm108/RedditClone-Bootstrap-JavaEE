@@ -94,6 +94,8 @@ public class RedditSession implements RedditSessionLocal {
 
   @Override
   public Community getCommunity(String cName) throws NotFoundException {
+
+    System.out.println("********************************" + cName);
     Query q;
     if (cName != null) {
       q = em.createQuery("SELECT c FROM Community c WHERE LOWER(c.name) = :name");
@@ -116,27 +118,38 @@ public class RedditSession implements RedditSessionLocal {
   }
 
   @Override
-  public void createPost(Post p) {
+  public Post createPost(Post p) {
+    em.persist(p);
+    return p;
+  }
+
+  @Override
+  public Post updatePost(Post p) throws NotFoundException {
+    Post currPost = em.find(Post.class, p.getId());
+
+    if (currPost != null) {
+      currPost.setTitle(p.getTitle());
+      currPost.setBody(p.getBody());
+      currPost.setTimeEdited(p.getTimeEdited());
+      currPost.setComments(p.getComments());
+      return currPost;
+    } else {
+      throw new NotFoundException("Not found");
+    }
+  }
+
+  @Override
+  public Post deletePost(Long pId) throws NotFoundException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public void updatePost(Post p) {
+  public Post upvotePost(Long rId, Long pId) throws NotFoundException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public Post deletePost(Long pId) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public void upvotePost(Long rId, Long pId) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public void downVotePost(Long rId, Long pId) throws NotFoundException {
+  public Post downVotePost(Long rId, Long pId) throws NotFoundException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

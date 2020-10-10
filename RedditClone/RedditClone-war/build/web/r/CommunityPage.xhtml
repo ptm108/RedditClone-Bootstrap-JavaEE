@@ -5,7 +5,8 @@
                 template="../layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
   <ui:define name="title"><h:outputText value="r/#{requestScope.cName}"/></ui:define>
   <ui:define name="cName"><h:outputText value="r/#{requestScope.cName}"/></ui:define>
@@ -34,22 +35,24 @@
                 <h1 style="margin: 5px 0; font-size: 25px"><h:outputText value="#{communityManagedBean.title}"/></h1>
                 <h4 style="margin: 5px 0"><h:outputText value="r/#{communityManagedBean.cName}"/></h4>
               </div>
-              <div>
+              <div style="align-self: center">
                 <p:linkButton value="Create Post"
-                              href="RedditClone-war/settings/createPost.xhtml"
-                              style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px; align-self: center"/>
+                              href="/RedditClone-war/settings/createPost.xhtml"
+                              style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px;">
+                  <f:param name="cName" value="#{communityManagedBean.cName}"/>
+                </p:linkButton>
                 <c:choose>
                   <c:when test="#{communityManagedBean.joined}">
                     <p:commandButton value="Leave"
                                      action="#{communityManagedBean.leaveCommunity}"
                                      update=":header"
-                                     style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px; align-self: center"/>
+                                     style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px;"/>
                   </c:when>
                   <c:otherwise>
                     <p:commandButton value="Join"
                                      action="#{communityManagedBean.joinCommunity}"
                                      update=":header"
-                                     style="margin: 0 5px; max-height: 32px; min-width: 120px; align-self: center"/>
+                                     style="margin: 0 5px; max-height: 32px; min-width: 120px;"/>
                   </c:otherwise>
                 </c:choose>
               </div>
@@ -58,7 +61,9 @@
         </h:form>
         <div class="p-grid p-justify-center">
           <div class="p-col-8">
-            <div class="box">8</div>
+            <c:forEach items="#{communityManagedBean.posts}" var="post">
+
+            </c:forEach>
           </div>
           <div class="p-col-2">
             <div class="box">2</div>

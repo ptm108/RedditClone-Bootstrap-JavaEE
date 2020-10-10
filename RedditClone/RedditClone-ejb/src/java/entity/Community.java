@@ -56,6 +56,14 @@ public class Community implements Serializable {
     this.members.remove(r);
   }
 
+  public void addPost(Post p) {
+    this.posts.add(p);
+  }
+
+  public void removePost(Post p) {
+    this.posts.remove(p);
+  }
+
   // getters and setters
   public String getName() {
     return name;

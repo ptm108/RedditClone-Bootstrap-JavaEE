@@ -6,7 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -82,7 +81,7 @@ public class Post implements Serializable {
     return timeCreated;
   }
 
-  public void setTimeCreated(Timestamp timeCreated) {
+  public void setTimeCreated(Date timeCreated) {
     this.timeCreated = timeCreated;
   }
 
@@ -90,7 +89,7 @@ public class Post implements Serializable {
     return timeEdited;
   }
 
-  public void setTimeEdited(Timestamp timeEdited) {
+  public void setTimeEdited(Date timeEdited) {
     this.timeEdited = timeEdited;
   }
 
