@@ -343,7 +343,7 @@ and open the template in the editor.
     margin-left: 0%;
   }
 }
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
   .p-md-1,
 .p-md-2,
 .p-md-3,
@@ -1338,7 +1338,7 @@ and open the template in the editor.
     display: inline-flex !important;
   }
 }
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
   .p-d-md-none {
     display: none !important;
   }

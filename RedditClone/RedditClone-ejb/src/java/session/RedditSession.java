@@ -95,7 +95,6 @@ public class RedditSession implements RedditSessionLocal {
   @Override
   public Community getCommunity(String cName) throws NotFoundException {
 
-    System.out.println("********************************" + cName);
     Query q;
     if (cName != null) {
       q = em.createQuery("SELECT c FROM Community c WHERE LOWER(c.name) = :name");
@@ -120,6 +119,7 @@ public class RedditSession implements RedditSessionLocal {
   @Override
   public Post createPost(Post p) {
     em.persist(p);
+    em.flush();
     return p;
   }
 

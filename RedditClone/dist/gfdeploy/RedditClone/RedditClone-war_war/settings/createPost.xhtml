@@ -41,9 +41,10 @@
 
             <f:facet name="footer">
               <div style="display: flex; justify-content: center">
-                <p:commandButton value="Register"
+                <p:commandButton value="Submit Post"
                                  action="#{postManagedBean.createPost}"
-                                 update="growl">
+                                 update="growl"
+                                 onclick="window.history.back()">
                   <f:param name="cName" value="#{param.cName}" />
                 </p:commandButton>
               </div>

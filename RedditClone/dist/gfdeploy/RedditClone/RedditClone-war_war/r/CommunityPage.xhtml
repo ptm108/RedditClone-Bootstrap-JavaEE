@@ -60,12 +60,20 @@
           </div>
         </h:form>
         <div class="p-grid p-justify-center">
-          <div class="p-col-8">
-            <c:forEach items="#{communityManagedBean.posts}" var="post">
-
-            </c:forEach>
+          <div class="p-col-8 p-md-10">
+            <ui:repeat value="#{communityManagedBean.posts}" var="post">
+              <div class="post">
+                <div class="vote">up/down</div>
+                <div class="post-body">
+                  <h2 style="margin: 2px 0">#{post.title}</h2>
+                  <p>
+                    #{post.body}
+                  </p>
+                </div>
+              </div>
+            </ui:repeat>
           </div>
-          <div class="p-col-2">
+          <div class="p-col-2 p-d-md-none">
             <div class="box">2</div>
           </div>
         </div>

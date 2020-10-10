@@ -31,7 +31,30 @@ a:link:hover, a:visited:hover  {
   color: #045491;
   text-decoration : underline;
 }
-
-.ui-button {
-  margin: 0 5px;
+div.post {
+  display: flex;
+  width: 100%;
+  background-color: rgb(50, 50, 50);
+  border: 0.5px solid rgb(52, 52, 54);
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
+
+div.post:hover {
+  border: 0.5px solid #dedede;
+}
+
+div.vote {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: rgb(25, 25, 25);
+  border-radius: 5px 0 0 5px;
+}
+
+div.post-body {
+  padding: 10px;
+  flex-grow: 10000;
+}
+

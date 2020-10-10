@@ -70,6 +70,15 @@ public class PostManagedBean implements Serializable {
       p.setDownvoters(new ArrayList<>());
 
       redditSessionLocal.createPost(p);
+
+      // update community
+      c.addPost(p);
+      redditSessionLocal.updateCommunity(c);
+
+      // update redditor
+      r.addPost(p);
+      redditSessionLocal.updateRedditor(r);
+
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Post created"));
     } catch (NotFoundException e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));

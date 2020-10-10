@@ -64,6 +64,14 @@ public class Redditor implements Serializable {
     this.communities.remove(c);
   }
 
+  public void addPost(Post p) {
+    this.posts.add(p);
+  }
+
+  public void deletePost(Post p) {
+    this.posts.remove(p);
+  }
+
   // getters and setters
   public String getUsername() {
     return username;
