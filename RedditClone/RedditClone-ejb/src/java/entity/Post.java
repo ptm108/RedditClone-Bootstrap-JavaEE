@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -32,6 +33,8 @@ public class Post implements Serializable {
   private Long id;
 
   private String title;
+
+  @Size(min = 1, max = 8000)
   private String body;
 
   @Temporal(TemporalType.TIMESTAMP)

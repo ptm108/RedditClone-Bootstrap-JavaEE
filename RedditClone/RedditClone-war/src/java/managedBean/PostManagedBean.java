@@ -5,6 +5,7 @@
  */
 package managedBean;
 
+import entity.Comment;
 import entity.Community;
 import entity.Post;
 import entity.Redditor;
@@ -13,7 +14,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -31,9 +34,17 @@ import session.RedditSessionLocal;
 @ViewScoped
 public class PostManagedBean implements Serializable {
 
+  private Long pId;
   private String title;
   private String body;
   private String cName;
+
+  private List<Redditor> upvoters;
+  private List<Redditor> downvoters;
+
+  private List<Comment> comments;
+
+  private Community community;
 
   @EJB
   private RedditSessionLocal redditSessionLocal;
@@ -45,6 +56,35 @@ public class PostManagedBean implements Serializable {
    * Creates a new instance of PostManagedBean
    */
   public PostManagedBean() {
+  }
+
+  @PostConstruct
+  public void init() {
+    // check if post id param is avail, break otherwise
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    Map<String, String> params = ec.getRequestParameterMap();
+    this.cName = params.get("cName");
+    this.pId = Long.parseLong(params.get("pId"));
+
+    if (pId == null) {
+      return;
+    }
+
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      this.title = p.getTitle();
+      this.body = p.getBody();
+      this.upvoters = p.getUpvoters();
+      this.downvoters = p.getDownvoters();
+      this.comments = p.getComments();
+      this.community = p.getCommunity();
+
+    } catch (Exception e) {
+      // do nothing
+    }
+
   }
 
   public void createPost() throws IOException {
@@ -88,6 +128,75 @@ public class PostManagedBean implements Serializable {
 
   }
 
+  public void upvote() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  }
+
+  public void downvote() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  }
+
+  public void removeVote() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  }
+
+  public boolean isUpvoted() {
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+
+      return p.getUpvoters().contains(r);
+    } catch (Exception e) {
+      // do nothing
+    }
+    return false;
+  }
+
+  public boolean isDownvoted() {
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+
+      return p.getDownvoters().contains(r);
+    } catch (Exception e) {
+      // do nothing
+    }
+    return false;
+  }
+
   public String getTitle() {
     return title;
   }
@@ -110,6 +219,46 @@ public class PostManagedBean implements Serializable {
 
   public void setcName(String cName) {
     this.cName = cName;
+  }
+
+  public Long getpId() {
+    return pId;
+  }
+
+  public void setpId(Long pId) {
+    this.pId = pId;
+  }
+
+  public List<Redditor> getUpvoters() {
+    return upvoters;
+  }
+
+  public void setUpvoters(List<Redditor> upvoters) {
+    this.upvoters = upvoters;
+  }
+
+  public List<Redditor> getDownvoters() {
+    return downvoters;
+  }
+
+  public void setDownvoters(List<Redditor> downvoters) {
+    this.downvoters = downvoters;
+  }
+
+  public List<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(List<Comment> comments) {
+    this.comments = comments;
+  }
+
+  public Community getCommunity() {
+    return community;
+  }
+
+  public void setCommunity(Community community) {
+    this.community = community;
   }
 
 }

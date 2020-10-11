@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <ui:param name="cName" value="r/#{param.cName}" />
+
+  <ui:define name="title">
+    View Post
+  </ui:define>
+
+  <ui:define name="cName">
+    <h:outputText value="r/#{param.cName}" />
+  </ui:define>
+
+  <ui:define name="community">
+    <div class="p-grid p-justify-center">
+      <div class="p-col-7 p-md-10">
+        <h:form id="post-body">
+          <div class="post">
+            <div class="vote">
+              <c:choose>
+                <c:when test="#{postManagedBean.isUpvoted()}">
+                  <p:commandButton action="#{postManagedBean.removeVote()}"
+                                   update="growl post-body"
+                                   style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
+                                   icon="pi pi-chevron-up" title="Remove vote">
+                    <f:param name="pId" value="#{post.id}" />
+                  </p:commandButton>
+                </c:when>
+                <c:otherwise>
+                  <p:commandButton action="#{postManagedBean.upvote()}"
+                                   update="growl post-body"
+                                   style="margin: 0 5px; background-color: transparent; border: none"
+                                   icon="pi pi-chevron-up" title="Upvote">
+                    <f:param name="pId" value="#{post.id}" />
+                  </p:commandButton>
+                </c:otherwise>
+              </c:choose>
+
+              <h:outputText value="#{postManagedBean.upvoters.size() - postManagedBean.downvoters.size()}" />
+
+              <c:choose>
+                <c:when test="#{postManagedBean.isDownvoted()}">
+                  <p:commandButton action="#{postManagedBean.removeVote()}"
+                                   update="growl post-body"
+                                   style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
+                                   icon="pi pi-chevron-down" title="Remove vote">
+                    <f:param name="pId" value="#{postManagedBean.pId}" />
+                  </p:commandButton>
+                </c:when>
+                <c:otherwise>
+                  <p:commandButton action="#{postManagedBean.downvote()}"
+                                   update="growl post-body"
+                                   style="margin: 0 5px; background-color: transparent; border: none"
+                                   icon="pi pi-chevron-down" title="Downvote">
+                    <f:param name="pId" value="#{postManagedBean.pId}" />
+                  </p:commandButton>
+                </c:otherwise>
+              </c:choose>
+            </div>
+            <div class="post-body">
+              <h2 style="margin: 2px 0">#{postManagedBean.title}</h2>
+              <p>
+                #{postManagedBean.body}
+              </p>
+            </div>
+          </div>
+        </h:form>
+      </div>
+      <div id="info" class="p-col-3 p-d-md-none">
+        <h:form id="info-panel">
+          <p:panel style="margin-bottom:20px">
+            <f:facet name="header">
+              <h2 style="margin: 0">r/#{param.cName}</h2>
+            </f:facet>
+
+            <h:panelGrid>
+              Description:<br />
+              #{postManagedBean.community.description}
+            </h:panelGrid>
+
+            <f:facet name="footer">
+              <h:outputText value="#{postManagedBean.community.members.size()} members" />
+            </f:facet>
+          </p:panel>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+</ui:composition>
