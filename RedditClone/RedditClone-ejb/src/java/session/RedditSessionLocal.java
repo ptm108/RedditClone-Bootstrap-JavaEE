@@ -37,6 +37,8 @@ public interface RedditSessionLocal {
 
   public Post createPost(Post p);
 
+  public Post getPost(Long pId) throws NotFoundException;
+
   public Post updatePost(Post p) throws NotFoundException;
 
   public Post deletePost(Long pId) throws NotFoundException;

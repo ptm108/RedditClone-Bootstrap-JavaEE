@@ -123,6 +123,17 @@ public class RedditSession implements RedditSessionLocal {
   }
 
   @Override
+  public Post getPost(Long pId) throws NotFoundException {
+    Post p = em.find(Post.class, pId);
+
+    if (p != null) {
+      return p;
+    } else {
+      throw new NotFoundException("Post not found");
+    }
+  }
+
+  @Override
   public Post updatePost(Post p) throws NotFoundException {
     Post currPost = em.find(Post.class, p.getId());
 

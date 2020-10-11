@@ -8,16 +8,18 @@ package managedBean;
 import entity.Community;
 import entity.Post;
 import entity.Redditor;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import session.RedditSessionLocal;
@@ -56,14 +58,17 @@ public class CommunityManagedBean implements Serializable {
     ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
     HttpServletRequest req = (HttpServletRequest) ec.getRequest();
 
-    FacesContext context = FacesContext.getCurrentInstance();
-
     try {
+      Community c;
       // get community name from url path
       // r/<cName>
-      cName = req.getAttribute("cName").toString();
+      if (cName == null) {
+        cName = req.getAttribute("cName").toString();
+        c = redditSessionLocal.getCommunity(cName);
+      } else {
+        c = redditSessionLocal.getCommunity(cId);
+      }
 
-      Community c = redditSessionLocal.getCommunity(cName);
       cId = c.getId();
       title = c.getTitle();
       description = c.getDescription();
@@ -118,15 +123,16 @@ public class CommunityManagedBean implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
 
     if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
-      return "/login.xhtml/faces-redirect=true";
+      return "/login.xhtml?faces-redirect=true";
     }
 
     try {
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
       Community c = redditSessionLocal.getCommunity(cId);
-      c.addMember(currRedditor);
 
       // add user to community side
+      members.add(currRedditor);
+      c.addMember(currRedditor);
       Community newC = redditSessionLocal.updateCommunity(c);
 
       // add community to redditor side
@@ -135,11 +141,14 @@ public class CommunityManagedBean implements Serializable {
       joined = true;
 
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Joined " + cName));
-      return null;
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-      return null;
     }
+
+    // reload page data
+    init();
+    return null;
+
   } // end joinCommunity
 
   public String leaveCommunity() {
@@ -147,15 +156,16 @@ public class CommunityManagedBean implements Serializable {
     context.getExternalContext().getFlash().setKeepMessages(true);
 
     if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
-      return "/login.xhtml/faces-redirect=true";
+      return "/login.xhtml?faces-redirect=true";
     }
 
     try {
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
       Community c = redditSessionLocal.getCommunity(cId);
-      c.removeMember(currRedditor);
 
       // remove user on community side
+      members.remove(currRedditor);
+      c.removeMember(currRedditor);
       Community newC = redditSessionLocal.updateCommunity(c);
 
       // remove community on redditor side
@@ -164,11 +174,106 @@ public class CommunityManagedBean implements Serializable {
       joined = false;
 
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Joined " + cName));
-      return null;
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-      return null;
     }
+
+    // reload page data
+    init();
+    return null;
+  }
+
+  public void upvote() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    Map<String, String> params = ec.getRequestParameterMap();
+    Long pId = Long.parseLong(params.get("pId"));
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+
+    // reload data on page
+    init();
+    ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
+
+  }
+
+  public void downvote() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    Map<String, String> params = ec.getRequestParameterMap();
+    Long pId = Long.parseLong(params.get("pId"));
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+
+    // reload data on page
+    init();
+    ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
+
+  }
+
+  public void removeVote() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    Map<String, String> params = ec.getRequestParameterMap();
+    Long pId = Long.parseLong(params.get("pId"));
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+
+    // reload data on page
+    init();
+    ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
+
+  }
+
+  public boolean isUpvoted(Long pId) {
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+
+      return p.getUpvoters().contains(r);
+    } catch (Exception e) {
+      // do nothing
+    }
+    return false;
+  }
+
+  public boolean isDownvoted(Long pId) {
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+
+      return p.getDownvoters().contains(r);
+    } catch (Exception e) {
+      // do nothing
+    }
+    return false;
   }
 
   public String getcName() {
@@ -233,10 +338,6 @@ public class CommunityManagedBean implements Serializable {
 
   public void setJoined(boolean joined) {
     this.joined = joined;
-  }
-
-  public int getNumMembers() {
-    return this.members.size();
   }
 
 }

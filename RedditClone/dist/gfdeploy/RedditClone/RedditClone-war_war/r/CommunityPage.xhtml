@@ -47,13 +47,13 @@
                   <c:when test="#{communityManagedBean.joined}">
                     <p:commandButton value="Leave"
                                      action="#{communityManagedBean.leaveCommunity}"
-                                     update=":header"
+                                     update=":header :info-panel"
                                      style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px;"/>
                   </c:when>
                   <c:otherwise>
                     <p:commandButton value="Join"
                                      action="#{communityManagedBean.joinCommunity}"
-                                     update=":header"
+                                     update=":header :info-panel"
                                      style="margin: 0 5px; max-height: 32px; min-width: 120px;"/>
                   </c:otherwise>
                 </c:choose>
@@ -63,33 +63,77 @@
         </h:form>
         <div class="p-grid p-justify-center">
           <div class="p-col-7 p-md-10">
-            <ui:repeat value="#{communityManagedBean.posts}" var="post">
-              <div class="post">
-                <div class="vote">up/down</div>
-                <div class="post-body">
-                  <h2 style="margin: 2px 0">#{post.title}</h2>
-                  <p>
-                    #{post.body}
-                  </p>
+            <h:form id="post-body">
+              <c:forEach items="#{communityManagedBean.posts}" var="post">
+                <div class="post">
+                  <div class="vote">
+                    <c:choose>
+                      <c:when test="#{communityManagedBean.isUpvoted(post.id)}">
+                        <p:commandButton action="#{communityManagedBean.removeVote()}"
+                                         update="growl post-body"
+                                         style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
+                                         icon="pi pi-chevron-up" title="Remove vote">
+                          <f:param name="pId" value="#{post.id}" />
+                        </p:commandButton>
+                      </c:when>
+                      <c:otherwise>
+                        <p:commandButton action="#{communityManagedBean.upvote()}"
+                                         update="growl post-body"
+                                         style="margin: 0 5px; background-color: transparent; border: none"
+                                         icon="pi pi-chevron-up" title="Upvote">
+                          <f:param name="pId" value="#{post.id}" />
+                        </p:commandButton>
+                      </c:otherwise>
+                    </c:choose>
+
+                    <h:outputText value="#{post.upvoters.size() - post.downvoters.size()}" />
+
+                    <c:choose>
+                      <c:when test="#{communityManagedBean.isDownvoted(post.id)}">
+                        <p:commandButton action="#{communityManagedBean.removeVote()}"
+                                         update="growl post-body"
+                                         style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
+                                         icon="pi pi-chevron-down" title="Remove vote">
+                          <f:param name="pId" value="#{post.id}" />
+                        </p:commandButton>
+                      </c:when>
+                      <c:otherwise>
+                        <p:commandButton action="#{communityManagedBean.downvote()}"
+                                         update="growl post-body"
+                                         style="margin: 0 5px; background-color: transparent; border: none"
+                                         icon="pi pi-chevron-down" title="Downvote">
+                          <f:param name="pId" value="#{post.id}" />
+                        </p:commandButton>
+                      </c:otherwise>
+                    </c:choose>
+                  </div>
+                  <div class="post-body">
+                    <h2 style="margin: 2px 0">#{post.title}</h2>
+                    <p>
+                      #{post.body}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </ui:repeat>
+              </c:forEach>
+            </h:form>
           </div>
-          <div class="p-col-3 p-d-md-none">
-            <p:panel id="info-panel" style="margin-bottom:20px">
-              <f:facet name="header">
-                <h2 style="margin: 0">r/#{communityManagedBean.cName}</h2>
-              </f:facet>
+          <div id="info" class="p-col-3 p-d-md-none">
+            <h:form id="info-panel">
+              <p:panel style="margin-bottom:20px">
+                <f:facet name="header">
+                  <h2 style="margin: 0">r/#{communityManagedBean.cName}</h2>
+                </f:facet>
 
-              <h:panelGrid>
-                Description:<br />
-                #{communityManagedBean.description}
-              </h:panelGrid>
+                <h:panelGrid>
+                  Description:<br />
+                  #{communityManagedBean.description}
+                </h:panelGrid>
 
-              <f:facet name="footer">
-                <h:outputText value="#{communityManagedBean.members.size()} members" />
-              </f:facet>
-            </p:panel>
+                <f:facet name="footer">
+                  <h:outputText value="#{communityManagedBean.members.size()} members" />
+                </f:facet>
+              </p:panel>
+            </h:form>
           </div>
         </div>
       </c:otherwise>
