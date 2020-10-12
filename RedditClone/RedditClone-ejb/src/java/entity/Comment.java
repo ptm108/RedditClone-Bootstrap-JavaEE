@@ -6,9 +6,9 @@
 package entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,13 +39,26 @@ public class Comment implements Serializable {
   private Date timeEdited;
 
   @ManyToOne
+  private Redditor author;
+
+  @ManyToOne
   private Post post;
 
   @ManyToOne
   private Comment parent;
-  @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Comment> children;
 
+  // helper methods
+  public void addReply(Comment c) {
+    this.children.add(c);
+  }
+
+  public void removeReply(Comment c) {
+    this.children.remove(c);
+  }
+
+  // getters setters
   public String getBody() {
     return body;
   }
@@ -58,7 +71,7 @@ public class Comment implements Serializable {
     return timeCreated;
   }
 
-  public void setTimeCreated(Timestamp timeCreated) {
+  public void setTimeCreated(Date timeCreated) {
     this.timeCreated = timeCreated;
   }
 
@@ -66,7 +79,7 @@ public class Comment implements Serializable {
     return timeEdited;
   }
 
-  public void setTimeEdited(Timestamp timeEdited) {
+  public void setTimeEdited(Date timeEdited) {
     this.timeEdited = timeEdited;
   }
 
@@ -100,6 +113,14 @@ public class Comment implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Redditor getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(Redditor author) {
+    this.author = author;
   }
 
   @Override

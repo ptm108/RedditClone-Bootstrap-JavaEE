@@ -72,6 +72,14 @@ public class Post implements Serializable {
     this.downvoters.remove(r);
   }
 
+  public void addComment(Comment c) {
+    this.comments.add(c);
+  }
+
+  public void removeComment(Comment c) {
+    this.comments.remove(c);
+  }
+
   // getters setters
   public String getTitle() {
     return title;

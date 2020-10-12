@@ -10,6 +10,7 @@ import entity.Community;
 import entity.Post;
 import entity.Redditor;
 import exception.NotFoundException;
+import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -150,7 +151,10 @@ public class RedditSession implements RedditSessionLocal {
 
   @Override
   public Post deletePost(Long pId) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Post p = em.find(Post.class, pId);
+    em.remove(p);
+
+    return p;
   }
 
   @Override
@@ -199,23 +203,60 @@ public class RedditSession implements RedditSessionLocal {
   }
 
   @Override
-  public void createComment(Long rId, Long pId, Comment c) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public Comment createComment(Comment c) throws NotFoundException {
+    em.persist(c);
+
+    Long pId = c.getPost().getId();
+
+    if (pId != null) {
+      Post p = em.find(Post.class, pId);
+      p.addComment(c);
+    } // comment is a comment to post
+    else {
+      Comment parent = em.find(Comment.class, c.getParent().getId());
+      parent.addReply(c);
+    } // comment is a reply
+
+    return c;
+
   }
 
   @Override
-  public void replyComment(Long cId, Comment c) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+  public Comment updateComment(Comment c) throws NotFoundException {
+    Comment currComment = em.find(Comment.class, c.getId());
 
-  @Override
-  public void updateComment(Long cId, Comment c) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    if (currComment != null) {
+      currComment.setBody(c.getBody());
+      currComment.setTimeEdited(new Date());
+      return c;
+    } else {
+      throw new NotFoundException("Comment not found");
+    }
+
   }
 
   @Override
   public Comment deleteComment(Long cId) throws NotFoundException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Comment c = em.find(Comment.class, cId);
+
+    if (c == null) {
+      throw new NotFoundException("Comment not found");
+    }
+
+    Long pId = c.getPost().getId();
+
+    if (pId != null) {
+      Post p = em.find(Post.class, pId);
+      p.removeComment(c);
+    } // comment is a comment to post
+    else {
+      Comment parent = em.find(Comment.class, c.getParent().getId());
+      parent.removeReply(c);
+    } // comment is a reply
+
+    em.remove(c);
+
+    return c;
   }
 
 }

@@ -52,6 +52,9 @@ public class Redditor implements Serializable {
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
   private List<Post> posts;
 
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+  private List<Comment> comments;
+
   @ManyToMany
   @JoinTable(name = "upvote_redditor", joinColumns = @JoinColumn(name = "redditor_id"),
           inverseJoinColumns = @JoinColumn(name = "post_id"))
@@ -181,6 +184,14 @@ public class Redditor implements Serializable {
 
   public void setModeratedCommunities(List<Community> moderatedCommunities) {
     this.moderatedCommunities = moderatedCommunities;
+  }
+
+  public List<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(List<Comment> comments) {
+    this.comments = comments;
   }
 
   @Override

@@ -45,6 +45,12 @@ public class PostManagedBean implements Serializable {
   private List<Comment> comments;
 
   private Community community;
+  private Redditor author;
+
+  private Date timeCreated;
+
+  // comment related 
+  private String comment;
 
   @EJB
   private RedditSessionLocal redditSessionLocal;
@@ -80,6 +86,8 @@ public class PostManagedBean implements Serializable {
       this.downvoters = p.getDownvoters();
       this.comments = p.getComments();
       this.community = p.getCommunity();
+      this.author = p.getAuthor();
+      this.timeCreated = p.getTimeCreated();
 
     } catch (Exception e) {
       // do nothing
@@ -137,7 +145,9 @@ public class PostManagedBean implements Serializable {
     }
 
     try {
-      redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
+      Post p = redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
+      this.upvoters = p.getUpvoters();
+      this.downvoters = p.getDownvoters();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -152,7 +162,9 @@ public class PostManagedBean implements Serializable {
     }
 
     try {
-      redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
+      Post p = redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
+      this.upvoters = p.getUpvoters();
+      this.downvoters = p.getDownvoters();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -167,7 +179,9 @@ public class PostManagedBean implements Serializable {
     }
 
     try {
-      redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
+      Post p = redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
+      this.upvoters = p.getUpvoters();
+      this.downvoters = p.getDownvoters();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -195,6 +209,50 @@ public class PostManagedBean implements Serializable {
       // do nothing
     }
     return false;
+  }
+
+  public void createComment() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
+      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
+    }
+
+    try {
+      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+      Post p = redditSessionLocal.getPost(pId);
+
+      Comment c = new Comment();
+      c.setAuthor(r);
+      c.setPost(p);
+      c.setBody(comment);
+      c.setTimeCreated(new Date());
+      c.setTimeEdited(new Date());
+      c.setChildren(new ArrayList<>());
+
+      c = redditSessionLocal.createComment(c);
+
+      this.comments.add(c);
+      comment = null;
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  }
+
+  public void deleteComment() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    Map<String, String> params = ec.getRequestParameterMap();
+    Long cId = Long.parseLong(params.get("cId"));
+
+    try {
+      Comment c = redditSessionLocal.deleteComment(cId);
+      this.comments.remove(c);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
   }
 
   public String getTitle() {
@@ -259,6 +317,30 @@ public class PostManagedBean implements Serializable {
 
   public void setCommunity(Community community) {
     this.community = community;
+  }
+
+  public Redditor getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(Redditor author) {
+    this.author = author;
+  }
+
+  public Date getTimeCreated() {
+    return timeCreated;
+  }
+
+  public void setTimeCreated(Date timeCreated) {
+    this.timeCreated = timeCreated;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
 }

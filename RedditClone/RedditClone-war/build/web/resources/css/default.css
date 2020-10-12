@@ -23,12 +23,12 @@ h4 {
 }
 
 a:link, a:visited {
-  color: #FFFF;
+  color: #dedede;
   text-decoration: none;
 }
 
 a:link:hover, a:visited:hover  {
-  color: #FFF;
+  color: #dedede;
   text-decoration : underline;
 }
 div.post {
@@ -55,6 +55,8 @@ div.vote {
 }
 
 div.post-body {
+  display: flex;
+  flex-direction: column;
   padding: 10px;
   flex-grow: 10000;
 }

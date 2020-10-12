@@ -27,7 +27,7 @@
               <c:choose>
                 <c:when test="#{postManagedBean.isUpvoted()}">
                   <p:commandButton action="#{postManagedBean.removeVote()}"
-                                   update="growl post-body"
+                                   update="post-body"
                                    style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
                                    icon="pi pi-chevron-up" title="Remove vote">
                     <f:param name="pId" value="#{post.id}" />
@@ -35,7 +35,7 @@
                 </c:when>
                 <c:otherwise>
                   <p:commandButton action="#{postManagedBean.upvote()}"
-                                   update="growl post-body"
+                                   update="post-body"
                                    style="margin: 0 5px; background-color: transparent; border: none"
                                    icon="pi pi-chevron-up" title="Upvote">
                     <f:param name="pId" value="#{post.id}" />
@@ -48,7 +48,7 @@
               <c:choose>
                 <c:when test="#{postManagedBean.isDownvoted()}">
                   <p:commandButton action="#{postManagedBean.removeVote()}"
-                                   update="growl post-body"
+                                   update="post-body"
                                    style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
                                    icon="pi pi-chevron-down" title="Remove vote">
                     <f:param name="pId" value="#{postManagedBean.pId}" />
@@ -56,7 +56,7 @@
                 </c:when>
                 <c:otherwise>
                   <p:commandButton action="#{postManagedBean.downvote()}"
-                                   update="growl post-body"
+                                   update="post-body"
                                    style="margin: 0 5px; background-color: transparent; border: none"
                                    icon="pi pi-chevron-down" title="Downvote">
                     <f:param name="pId" value="#{postManagedBean.pId}" />
@@ -69,8 +69,45 @@
               <p>
                 #{postManagedBean.body}
               </p>
+              <span style="align-self: flex-end; font-style: italic">
+                posted by u/#{postManagedBean.author.displayName} at #{postManagedBean.timeCreated}
+              </span>
             </div>
           </div>
+        </h:form>
+        <h:form id="comment-body">
+          <p:panel header="Comment" style="margin-bottom: 20px">
+            <div class="ui-fluid">
+              <div class="p-field">
+                <p:inputTextarea id="body"
+                                 value="#{postManagedBean.comment}"
+                                 rows="2"/>
+              </div>
+            </div>
+
+            <p:commandButton value="Comment"
+                             action="#{postManagedBean.createComment}"
+                             update="growl comment-body"
+                             style="width: 100%"/>
+          </p:panel>
+
+          <ui:repeat value="#{postManagedBean.comments}" var="comment" >
+            <div class="post" style="display: flex; flex-direction: column; padding: 10px">
+              <h4 style="margin-bottom: 5px">
+                u/#{comment.author.displayName} at #{comment.timeCreated}
+              </h4>
+              <h:outputText value="#{comment.body}" />
+              <div style="display: flex; justify-content: flex-end">
+                <p:commandButton action="#{postManagedBean.deleteComment}"
+                                 rendered="#{authenticationManagedBean.rId.equals(comment.author.id)}"
+                                 update="growl :comment-body" process="@this"
+                                 style="margin-left: 8px;"
+                                 icon="fa fa-remove" title="Delete Comment">
+                  <f:param name="cId" value="#{comment.id}" />
+                </p:commandButton>
+              </div>
+            </div>
+          </ui:repeat>
         </h:form>
       </div>
       <div id="info" class="p-col-3 p-d-md-none">
