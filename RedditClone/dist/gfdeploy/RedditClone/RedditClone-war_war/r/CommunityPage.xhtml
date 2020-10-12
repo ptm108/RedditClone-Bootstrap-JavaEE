@@ -21,7 +21,9 @@
             <h3>This community may have been banned or the community name is incorrect.</h3>
             <div style="display: flex; margin: 40px 0 0;">
               <p:linkButton href="/RedditClone-war/settings/NewCommunity.xhtml" value="Create New Community"
-                            style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; flex-grow: 4"/>
+                            style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; flex-grow: 4">
+                <f:param name="cName" value="#{requestScope.cName}" />
+              </p:linkButton>
               <p:linkButton href="/RedditClone-war/" value="Go Home"
                             style="margin: 0 5px; flex-grow: 1"/>
             </div>
@@ -123,7 +125,9 @@
             <h:form id="info-panel">
               <p:panel style="margin-bottom:20px">
                 <f:facet name="header">
-                  <h2 style="margin: 0">r/#{communityManagedBean.cName}</h2>
+                  <p:link href="/RedditClone-war/r/#{communityManagedBean.cName}">
+                    <h2 style="margin: 0">r/#{communityManagedBean.cName}</h2>
+                  </p:link>
                 </f:facet>
 
                 <h:panelGrid>

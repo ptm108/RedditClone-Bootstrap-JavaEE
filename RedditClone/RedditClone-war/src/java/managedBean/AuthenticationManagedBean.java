@@ -88,7 +88,7 @@ public class AuthenticationManagedBean implements Serializable {
         password = null;
 
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Welcome back, " + username));
-        return "/layout.xhtml?faces-redirect=true";
+        return "/home.xhtml?faces-redirect=true";
       } else {
         throw new NotFoundException("Invalid credentials");
       }

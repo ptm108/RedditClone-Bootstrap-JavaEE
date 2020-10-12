@@ -8,14 +8,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-  <ui:param name="cName" value="r/#{param.cName}" />
-
   <ui:define name="title">
     View Post
-  </ui:define>
-
-  <ui:define name="cName">
-    <h:outputText value="r/#{param.cName}" rendered="#{not empty param.cName}"/>
   </ui:define>
 
   <ui:define name="community">
@@ -69,9 +63,13 @@
               <p>
                 #{postManagedBean.body}
               </p>
-              <span style="align-self: flex-end; font-style: italic">
-                posted by u/#{postManagedBean.author.displayName} at #{postManagedBean.timeCreated}
-              </span>
+              <div style="align-self: flex-end; font-style: italic">
+                posted by
+                <p:link href="profile.xhtml" value="u/#{postManagedBean.author.displayName}">
+                  <f:param name="rId" value="#{postManagedBean.author.id}" />
+                </p:link>
+                #{utilityManagedBean.getTimeDifference(postManagedBean.timeCreated)} ago
+              </div>
               <div style="display: flex; justify-content: flex-end; margin: 5px 0">
                 <p:linkButton outcome="/settings/editPost.xhtml"
                               rendered="#{authenticationManagedBean.rId.equals(postManagedBean.author.id)}"
@@ -107,7 +105,10 @@
           <ui:repeat value="#{postManagedBean.comments}" var="comment" >
             <div class="post" style="display: flex; flex-direction: column; padding: 10px">
               <h4 style="margin-bottom: 5px">
-                u/#{comment.author.displayName} at #{comment.timeCreated}
+                <h:link outcome="profile.xhtml" value="u/#{comment.author.displayName}">
+                  <f:param name="rId" value="#{comment.author.id}" />
+                </h:link>
+                #{utilityManagedBean.getTimeDifference(comment.timeCreated)} ago
               </h4>
               <h:outputText value="#{comment.body}" />
 
@@ -115,7 +116,10 @@
                 <div class="reply-body">
                   <div>
                     <h4 style="margin-bottom: 5px">
-                      u/#{reply.author.displayName} at #{reply.timeCreated}
+                      <h:link outcome="profile.xhtml" value="u/#{reply.author.displayName}">
+                        <f:param name="rId" value="#{reply.author.id}" />
+                      </h:link>
+                      #{utilityManagedBean.getTimeDifference(reply.timeCreated)} ago
                     </h4>
                     <h:outputText value="#{reply.body}" />
                   </div>
@@ -207,7 +211,9 @@
         <h:form id="info-panel">
           <p:panel style="margin-bottom:20px" rendered="#{not empty param.cName}">
             <f:facet name="header">
-              <h2 style="margin: 0">r/#{param.cName}</h2>
+              <p:link href="/RedditClone-war/r/#{param.cName}">
+                <h2 style="margin: 0">r/#{param.cName}</h2>
+              </p:link>
             </f:facet>
 
             <h:panelGrid>

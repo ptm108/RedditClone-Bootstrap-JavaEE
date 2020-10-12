@@ -22,16 +22,17 @@
         <p:menuitem url="/RedditClone-war/#{cName}" icon="fa fa-fw fa-reddit">
           <h1>reddit <sub style="font-weight: normal"><ui:insert name="cName"/></sub></h1>
         </p:menuitem>
+
         <c:if test="#{authenticationManagedBean.rId ge 0}">
           <p:submenu label="#{authenticationManagedBean.displayName}"
                      style="float: right; border: 1px solid #dedede; border-radius: 5px; margin: 0 10px;">
-            <p:menuitem value="Profile" url="/RedditClone-war/profile.xhtml">
+            <p:menuitem url="/RedditClone-war/" icon="fa fa-home" style="">Home</p:menuitem>
+            <p:menuitem value="Profile" icon="fa fa-user" url="/RedditClone-war/profile.xhtml">
               <f:param name="rId" value="#{authenticationManagedBean.rId}" />
             </p:menuitem>
-            <p:separator />
-            <p:menuitem value="Settings" url="/RedditClone-war/settings/userSettings.xhtml" />
-            <p:separator />
+            <p:menuitem value="Settings" icon="fa fa-gear" url="/RedditClone-war/settings/userSettings.xhtml" />
             <p:menuitem value="Logout" icon="pi pi-power-off"
+                        style="background-color: crimson"
                         action="#{authenticationManagedBean.logout}"/>
           </p:submenu>
         </c:if>

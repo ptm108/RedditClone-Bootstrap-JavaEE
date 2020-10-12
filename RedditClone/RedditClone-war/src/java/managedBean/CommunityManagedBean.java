@@ -71,6 +71,13 @@ public class CommunityManagedBean implements Serializable {
     ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
     HttpServletRequest req = (HttpServletRequest) ec.getRequest();
 
+    Map<String, String> params = ec.getRequestParameterMap();
+    String newName = params.get("cName");
+
+    if (newName != null) {
+      this.cName = newName;
+    }
+
     try {
       Community c;
       // get community name from url path
@@ -100,6 +107,7 @@ public class CommunityManagedBean implements Serializable {
     } catch (Exception e) {
       // do nothing
     }
+
   } //end init
 
   public void createCommunity() {

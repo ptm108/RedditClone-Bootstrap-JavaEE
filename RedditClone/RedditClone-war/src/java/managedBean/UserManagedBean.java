@@ -7,6 +7,7 @@ package managedBean;
 
 import entity.Post;
 import entity.Redditor;
+import exception.NotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -103,6 +104,14 @@ public class UserManagedBean implements Serializable {
     }
   }
 
+  public void refreshPosts() throws NotFoundException {
+    for (int i = 0; i < this.posts.size(); i++) {
+      Post p = this.posts.get(i);
+      p = redditSessionLocal.getPost(p.getId());
+      this.posts.set(i, p);
+    }
+  }
+
   public void upvote() throws IOException {
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();
@@ -115,11 +124,8 @@ public class UserManagedBean implements Serializable {
     }
 
     try {
-      Post p = redditSessionLocal.getPost(pId);
-      int index = this.posts.indexOf(p);
-
-      p = redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
-      this.posts.set(index, p);
+      redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
+      refreshPosts();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -138,11 +144,8 @@ public class UserManagedBean implements Serializable {
     }
 
     try {
-      Post p = redditSessionLocal.getPost(pId);
-      int index = this.posts.indexOf(p);
-
-      p = redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
-      this.posts.set(index, p);
+      redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
+      refreshPosts();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -161,11 +164,8 @@ public class UserManagedBean implements Serializable {
     }
 
     try {
-      Post p = redditSessionLocal.getPost(pId);
-      int index = this.posts.indexOf(p);
-
-      p = redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
-      this.posts.set(index, p);
+      redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
+      refreshPosts();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }

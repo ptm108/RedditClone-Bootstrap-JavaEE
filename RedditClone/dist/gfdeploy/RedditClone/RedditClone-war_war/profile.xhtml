@@ -41,7 +41,7 @@
         </div>
         <h:form id="post-body">
           <c:if test="#{userManagedBean.search}">
-            <div class="post" style="align-items: center; padding: 5px 3px;">
+            <div class="post" style="align-items: center; padding: 5px;">
               <p:inputText placeholder="Search" style="flex-grow: 5; margin-right: 10px" value="#{userManagedBean.searchTerm}" autocomplete="off"/>
               <p:commandButton action="#{userManagedBean.searchPosts}" value="Search" style="flex-grow: 1" update="post-body"/>
             </div>

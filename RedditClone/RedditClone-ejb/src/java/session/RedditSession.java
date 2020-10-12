@@ -116,6 +116,15 @@ public class RedditSession implements RedditSessionLocal {
   }
 
   @Override
+  public List<Community> searchCommunity(String searchTerm) {
+    Query q;
+    q = em.createQuery("SELECT c FROM Community c WHERE LOWER(c.title) LIKE :search OR LOWER(c.name) LIKE :search "
+            + "OR LOWER(c.description) LIKE :search");
+    q.setParameter("search", "%" + searchTerm.toLowerCase() + "%");
+    return q.getResultList();
+  }
+
+  @Override
   public Post createPost(Post p) {
     em.persist(p);
     return p;
@@ -134,7 +143,11 @@ public class RedditSession implements RedditSessionLocal {
 
   @Override
   public List<Post> getAllPosts(String searchTerm) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Query q;
+    q = em.createQuery("SELECT p FROM Post p WHERE LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search"
+            + " ORDER BY p.timeCreated DESC");
+    q.setParameter("search", "%" + searchTerm.toLowerCase() + "%");
+    return q.getResultList();
   }
 
   @Override
@@ -224,11 +237,11 @@ public class RedditSession implements RedditSessionLocal {
     if (currPost != null && currRedditor != null) {
       currPost.removeVote(currRedditor);
       currRedditor.removeVote(currPost);
+
+      return currPost;
     } else {
       throw new NotFoundException("Post or redditor not found");
     }
-
-    return currPost;
   }
 
   @Override

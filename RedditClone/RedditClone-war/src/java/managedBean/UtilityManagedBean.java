@@ -8,6 +8,7 @@ package managedBean;
 import entity.Comment;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 
@@ -37,6 +38,29 @@ public class UtilityManagedBean {
     }
 
     return count;
+  }
+
+  public String getTimeDifference(Date date) {
+    Date currDate = new Date();
+
+    long timeDiff = currDate.getTime() - date.getTime();
+
+    long sec = TimeUnit.MILLISECONDS.toSeconds(timeDiff);
+    if (sec < 60) {
+      return sec + " seconds";
+    }
+
+    long mins = TimeUnit.MILLISECONDS.toMinutes(timeDiff);
+    if (mins < 60) {
+      return mins + " mins";
+    }
+
+    long h = TimeUnit.MILLISECONDS.toHours(timeDiff);
+    if (h < 24) {
+      return h + " hours";
+    }
+
+    return TimeUnit.MILLISECONDS.toDays(timeDiff) + " days";
   }
 
 }

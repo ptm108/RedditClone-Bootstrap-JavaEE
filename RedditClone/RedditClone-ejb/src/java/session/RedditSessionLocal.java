@@ -36,6 +36,8 @@ public interface RedditSessionLocal {
 
   public Community getCommunity(Long cId) throws NotFoundException;
 
+  public List<Community> searchCommunity(String searchTerm);
+
   public Post createPost(Post p);
 
   public Post getPost(Long pId) throws NotFoundException;
