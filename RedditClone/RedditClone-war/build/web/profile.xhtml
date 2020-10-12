@@ -73,8 +73,12 @@
               </div>
               <div class="post-body">
                 <h2 style="margin: 2px 0">
-                  <h:link value="#{post.title}" outcome="/postPage.xhtml" >
-                    <f:param name="cName" value="#{post.community.name}" rendered="#{post.community != null}"/>
+                  <h:link value="#{post.title}" outcome="/postPage.xhtml" rendered="#{not empty post.community}">
+                    <f:param name="cName" value="#{post.community.name}"/>
+                    <f:param name="pId" value="#{post.id}"/>
+                  </h:link>
+                  <h:link value="#{post.title}" outcome="/postPage.xhtml" rendered="#{empty post.community}">
+                    <f:param name="rId" value="#{userManagedBean.rId}"/>
                     <f:param name="pId" value="#{post.id}"/>
                   </h:link>
                 </h2>

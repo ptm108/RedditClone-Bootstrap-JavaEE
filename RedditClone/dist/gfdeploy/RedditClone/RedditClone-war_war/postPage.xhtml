@@ -15,7 +15,7 @@
   </ui:define>
 
   <ui:define name="cName">
-    <h:outputText value="r/#{param.cName}" />
+    <h:outputText value="r/#{param.cName}" rendered="#{not empty param.cName}"/>
   </ui:define>
 
   <ui:define name="community">
@@ -205,7 +205,7 @@
       </div>
       <div id="info" class="p-col-3 p-d-md-none">
         <h:form id="info-panel">
-          <p:panel style="margin-bottom:20px">
+          <p:panel style="margin-bottom:20px" rendered="#{not empty param.cName}">
             <f:facet name="header">
               <h2 style="margin: 0">r/#{param.cName}</h2>
             </f:facet>
@@ -218,6 +218,14 @@
             <f:facet name="footer">
               <h:outputText value="#{postManagedBean.community.members.size()} members" />
             </f:facet>
+          </p:panel>
+          <p:panel style="margin-bottom:20px" rendered="#{empty param.cName}">
+            <f:facet name="header">
+              <h2 style="margin: 0">u/#{postManagedBean.author.displayName}</h2>
+            </f:facet>
+            <h3>About:</h3>
+            #{postManagedBean.author.about} <br/><br/>
+            <b>Date joined:</b> #{utilityManagedBean.formatDate(postManagedBean.author.dateJoined)}
           </p:panel>
         </h:form>
       </div>
