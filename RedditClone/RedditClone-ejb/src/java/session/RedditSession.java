@@ -206,9 +206,9 @@ public class RedditSession implements RedditSessionLocal {
   public Comment createComment(Comment c) throws NotFoundException {
     em.persist(c);
 
-    Long pId = c.getPost().getId();
+    if (c.getPost() != null) {
+      Long pId = c.getPost().getId();
 
-    if (pId != null) {
       Post p = em.find(Post.class, pId);
       p.addComment(c);
     } // comment is a comment to post
@@ -228,7 +228,8 @@ public class RedditSession implements RedditSessionLocal {
     if (currComment != null) {
       currComment.setBody(c.getBody());
       currComment.setTimeEdited(new Date());
-      return c;
+      em.flush();
+      return currComment;
     } else {
       throw new NotFoundException("Comment not found");
     }
@@ -243,9 +244,8 @@ public class RedditSession implements RedditSessionLocal {
       throw new NotFoundException("Comment not found");
     }
 
-    Long pId = c.getPost().getId();
-
-    if (pId != null) {
+    if (c.getPost() != null) {
+      Long pId = c.getPost().getId();
       Post p = em.find(Post.class, pId);
       p.removeComment(c);
     } // comment is a comment to post
@@ -256,6 +256,16 @@ public class RedditSession implements RedditSessionLocal {
 
     em.remove(c);
 
+    return c;
+  }
+
+  @Override
+  public Comment getComment(Long cId) throws NotFoundException {
+    Comment c = em.find(Comment.class, cId);
+
+    if (c == null) {
+      throw new NotFoundException("Comment not found");
+    }
     return c;
   }
 

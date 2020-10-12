@@ -55,4 +55,6 @@ public interface RedditSessionLocal {
 
   public Comment deleteComment(Long cId) throws NotFoundException;
 
+  public Comment getComment(Long cId) throws NotFoundException;
+
 }

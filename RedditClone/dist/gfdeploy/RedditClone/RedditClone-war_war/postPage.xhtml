@@ -80,13 +80,13 @@
             <div class="ui-fluid">
               <div class="p-field">
                 <p:inputTextarea id="body"
-                                 value="#{postManagedBean.comment}"
+                                 value="#{commentManagedBean.comment}"
                                  rows="2"/>
               </div>
             </div>
 
             <p:commandButton value="Comment"
-                             action="#{postManagedBean.createComment}"
+                             action="#{commentManagedBean.createComment}"
                              update="growl comment-body"
                              style="width: 100%"/>
           </p:panel>
@@ -97,8 +97,44 @@
                 u/#{comment.author.displayName} at #{comment.timeCreated}
               </h4>
               <h:outputText value="#{comment.body}" />
-              <div style="display: flex; justify-content: flex-end">
-                <p:commandButton action="#{postManagedBean.deleteComment}"
+
+              <ui:repeat value="#{comment.children}" var="reply">
+                <div class="reply-body">
+                  <div>
+                    <h4 style="margin-bottom: 5px">
+                      u/#{reply.author.displayName} at #{reply.timeCreated}
+                    </h4>
+                    <h:outputText value="#{reply.body}" />
+                  </div>
+                  <div style="align-self: center">
+                    <p:commandButton action="#{commentManagedBean.deleteReply}"
+                                     rendered="#{authenticationManagedBean.rId.equals(reply.author.id)}"
+                                     update="growl :comment-body" process="@this"
+                                     style="margin-left: 8px;"
+                                     icon="fa fa-remove" title="Delete Comment">
+                      <f:param name="parentCId" value="#{comment.id}"/>
+                      <f:param name="cId" value="#{reply.id}" />
+                    </p:commandButton>
+                  </div>
+                </div>
+              </ui:repeat>
+
+              <div style="display: flex; justify-content: flex-end; margin-bottom: 10px">
+                <p:commandButton action="#{commentManagedBean.selectReply}"
+                                 rendered="#{authenticationManagedBean.rId gt 0}"
+                                 update="growl :comment-body"
+                                 style="margin-left: 8px;"
+                                 icon="fa fa-reply" title="Reply Comment">
+                  <f:param name="cId" value="#{comment.id}" />
+                </p:commandButton>
+                <p:commandButton action="#{commentManagedBean.selectComment}"
+                                 rendered="#{authenticationManagedBean.rId.equals(comment.author.id)}"
+                                 update="growl :comment-body"
+                                 style="margin-left: 8px;"
+                                 icon="pi pi-pencil" title="Edit Comment">
+                  <f:param name="cId" value="#{comment.id}" />
+                </p:commandButton>
+                <p:commandButton action="#{commentManagedBean.deleteComment}"
                                  rendered="#{authenticationManagedBean.rId.equals(comment.author.id)}"
                                  update="growl :comment-body" process="@this"
                                  style="margin-left: 8px;"
@@ -106,6 +142,50 @@
                   <f:param name="cId" value="#{comment.id}" />
                 </p:commandButton>
               </div>
+              <p:panel header="Edit Comment"
+                       style="margin-bottom: 20px"
+                       rendered="#{commentManagedBean.selectedCommentId.equals(comment.id)}">
+                <div class="ui-fluid">
+                  <div class="p-field">
+                    <p:inputTextarea id="edit-comment"
+                                     value="#{commentManagedBean.editComment}"
+                                     rows="2"/>
+                  </div>
+                </div>
+                <div style="display: flex; ">
+                  <p:commandButton value="Cancel"
+                                   action="#{commentManagedBean.unselectComment}"
+                                   update="growl comment-body"
+                                   style="flex-grow: 1; background-color: rgb(88, 88, 88); border: none"/>
+
+                  <p:commandButton value="Edit Comment"
+                                   action="#{commentManagedBean.updateComment}"
+                                   update="growl comment-body"
+                                   style="flex-grow: 1; width: 50%"/>
+                </div>
+              </p:panel>
+              <p:panel header="Reply Comment"
+                       style="margin-bottom: 20px"
+                       rendered="#{commentManagedBean.selectedReplyId.equals(comment.id)}">
+                <div class="ui-fluid">
+                  <div class="p-field">
+                    <p:inputTextarea id="reply-comment"
+                                     value="#{commentManagedBean.editComment}"
+                                     rows="2"/>
+                  </div>
+                </div>
+                <div style="display: flex; ">
+                  <p:commandButton value="Cancel"
+                                   action="#{commentManagedBean.unselectComment}"
+                                   update="growl comment-body"
+                                   style="flex-grow: 1; background-color: rgb(88, 88, 88); border: none"/>
+
+                  <p:commandButton value="Reply Comment"
+                                   action="#{commentManagedBean.replyComment}"
+                                   update="growl comment-body"
+                                   style="flex-grow: 1; width: 50%"/>
+                </div>
+              </p:panel>
             </div>
           </ui:repeat>
         </h:form>

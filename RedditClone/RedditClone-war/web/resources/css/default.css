@@ -61,3 +61,11 @@ div.post-body {
   flex-grow: 10000;
 }
 
+div.reply-body {
+  display: flex;
+  padding: 5px 0 5px 5px;
+  margin: 5px 0 5px 25px ; 
+  border-left: 2px solid #dedede;
+  justify-content: space-between;
+}
+

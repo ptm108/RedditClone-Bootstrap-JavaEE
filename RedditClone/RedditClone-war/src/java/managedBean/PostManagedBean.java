@@ -49,9 +49,6 @@ public class PostManagedBean implements Serializable {
 
   private Date timeCreated;
 
-  // comment related 
-  private String comment;
-
   @EJB
   private RedditSessionLocal redditSessionLocal;
 
@@ -72,13 +69,14 @@ public class PostManagedBean implements Serializable {
 
     Map<String, String> params = ec.getRequestParameterMap();
     this.cName = params.get("cName");
-    this.pId = Long.parseLong(params.get("pId"));
+    String pIdString = params.get("pId");
 
-    if (pId == null) {
+    if (pIdString == null) {
       return;
     }
 
     try {
+      this.pId = Long.parseLong(pIdString);
       Post p = redditSessionLocal.getPost(pId);
       this.title = p.getTitle();
       this.body = p.getBody();
@@ -211,50 +209,6 @@ public class PostManagedBean implements Serializable {
     return false;
   }
 
-  public void createComment() throws IOException {
-    FacesContext context = FacesContext.getCurrentInstance();
-    ExternalContext ec = context.getExternalContext();
-
-    if (authenticationManagedBean == null || authenticationManagedBean.getrId() < 0) {
-      ec.redirect(ec.getRequestContextPath() + "/login.xhtml?faces-redirect=true");
-    }
-
-    try {
-      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
-      Post p = redditSessionLocal.getPost(pId);
-
-      Comment c = new Comment();
-      c.setAuthor(r);
-      c.setPost(p);
-      c.setBody(comment);
-      c.setTimeCreated(new Date());
-      c.setTimeEdited(new Date());
-      c.setChildren(new ArrayList<>());
-
-      c = redditSessionLocal.createComment(c);
-
-      this.comments.add(c);
-      comment = null;
-    } catch (Exception e) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-    }
-  }
-
-  public void deleteComment() {
-    FacesContext context = FacesContext.getCurrentInstance();
-    ExternalContext ec = context.getExternalContext();
-
-    Map<String, String> params = ec.getRequestParameterMap();
-    Long cId = Long.parseLong(params.get("cId"));
-
-    try {
-      Comment c = redditSessionLocal.deleteComment(cId);
-      this.comments.remove(c);
-    } catch (Exception e) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-    }
-  }
-
   public String getTitle() {
     return title;
   }
@@ -333,14 +287,6 @@ public class PostManagedBean implements Serializable {
 
   public void setTimeCreated(Date timeCreated) {
     this.timeCreated = timeCreated;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
   }
 
 }
