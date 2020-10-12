@@ -66,7 +66,7 @@ public class CommentManagedBean implements Serializable {
       Comment c = new Comment();
       c.setAuthor(r);
       c.setPost(p);
-      c.setBody(comment);
+      c.setBody(comment.trim());
       c.setTimeCreated(new Date());
       c.setTimeEdited(new Date());
       c.setChildren(new ArrayList<>());

@@ -44,6 +44,8 @@ public interface RedditSessionLocal {
 
   public List<Post> getUserPosts(Long rId, String searchTerm);
 
+  public List<Post> getCommunityPosts(Long cId, String searchTerm);
+
   public Post updatePost(Post p) throws NotFoundException;
 
   public Post deletePost(Long pId) throws NotFoundException;

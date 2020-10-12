@@ -5,7 +5,9 @@
  */
 package managedBean;
 
+import entity.Comment;
 import java.util.Date;
+import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 
@@ -25,6 +27,16 @@ public class UtilityManagedBean {
 
   public String formatDate(Date date) {
     return date.toGMTString().substring(0, 11).trim().replace(" ", "-");
+  }
+
+  public int getCommentCount(List<Comment> comments) {
+    int count = comments.size();
+
+    for (Comment c : comments) {
+      count += c.getChildren().size();
+    }
+
+    return count;
   }
 
 }

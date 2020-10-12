@@ -9,6 +9,9 @@ import entity.Post;
 import entity.Redditor;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -16,9 +19,9 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import session.RedditSessionLocal;
 
 /**
@@ -33,6 +36,9 @@ public class UserManagedBean implements Serializable {
   private Redditor r;
   private List<Post> posts;
 
+  private String sort = null;
+  private List<String> sortVals;
+
   private boolean search = false;
   private String searchTerm;
 
@@ -42,6 +48,25 @@ public class UserManagedBean implements Serializable {
   @Inject
   private AuthenticationManagedBean authenticationManagedBean;
 
+  // custom sorter
+  static class PopularitySorter implements Comparator<Post> {
+
+    @Override
+    public int compare(Post p1, Post p2) {
+      int v1 = p1.getUpvoters().size() - p1.getDownvoters().size();
+      int v2 = p2.getUpvoters().size() - p2.getDownvoters().size();
+      return (v1 - v2) * -1;
+    }
+  }
+
+  static class AlphabeticalSorter implements Comparator<Post> {
+
+    @Override
+    public int compare(Post p1, Post p2) {
+      return p1.getTitle().compareTo(p2.getTitle());
+    }
+  }
+
   /**
    * Creates a new instance of UserManagedBean
    */
@@ -50,6 +75,10 @@ public class UserManagedBean implements Serializable {
 
   @PostConstruct
   public void init() {
+    sortVals = new ArrayList<>();
+    sortVals.add("Popularity");
+    sortVals.add("Alphabetical");
+
     // check if user id param is avail, break otherwise
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();
@@ -181,6 +210,18 @@ public class UserManagedBean implements Serializable {
     }
   }
 
+  public void onSortSelect() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    if (this.sort != null && this.sort.equals("Popularity")) {
+      Collections.sort(posts, new PopularitySorter());
+    } else if (this.sort.equals("Alphabetical")) {
+      Collections.sort(posts, new AlphabeticalSorter());
+    }
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sorted!", "Sorted by " + sort));
+  }
+
   public Long getrId() {
     return rId;
   }
@@ -219,6 +260,22 @@ public class UserManagedBean implements Serializable {
 
   public void setSearchTerm(String searchTerm) {
     this.searchTerm = searchTerm;
+  }
+
+  public String getSort() {
+    return sort;
+  }
+
+  public void setSort(String sort) {
+    this.sort = sort;
+  }
+
+  public List<String> getSortVals() {
+    return sortVals;
+  }
+
+  public void setSortVals(List<String> sortVals) {
+    this.sortVals = sortVals;
   }
 
 }

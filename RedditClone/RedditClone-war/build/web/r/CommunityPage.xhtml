@@ -64,6 +64,10 @@
         <div class="p-grid p-justify-center">
           <div class="p-col-7 p-md-10">
             <h:form id="post-body">
+              <div class="post" style="align-items: center; padding: 5px;">
+                <p:inputText placeholder="Search Posts" style="flex-grow: 5; margin-right: 10px" value="#{communityManagedBean.searchTerm}" autocomplete="off"/>
+                <p:commandButton action="#{communityManagedBean.searchPosts}" value="Search" style="flex-grow: 1" update="post-body"/>
+              </div>
               <ui:repeat value="#{communityManagedBean.posts}" var="post">
                 <div class="post">
                   <div class="vote">
@@ -109,6 +113,7 @@
                     <p>
                       #{post.body}
                     </p>
+                    <h6>#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
                   </div>
                 </div>
               </ui:repeat>

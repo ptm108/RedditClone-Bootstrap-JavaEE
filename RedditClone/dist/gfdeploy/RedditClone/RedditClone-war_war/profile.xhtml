@@ -25,8 +25,18 @@
             <p:commandButton value="Search" id="search"
                              action="#{userManagedBean.toggleSearch}"
                              icon="pi pi-search"
-                             update="post-body"
-                             style=""/>
+                             update="growl post-body"/>
+            <h:form style="margin: 0">
+              <p:selectOneMenu id="sort" value="#{userManagedBean.sort}"
+                               style="width: 125px; margin-left: 5px">
+                <p:ajax listener="#{userManagedBean.onSortSelect}"
+                        event="change"
+                        update="growl post-body"/>
+                <f:selectItem itemLabel="Sort By" itemValue="" noSelectionOption="true" />
+                <f:selectItems value="#{userManagedBean.sortVals}" var="s" itemValue="#{s}" itemLabel="#{s}" />
+              </p:selectOneMenu>
+            </h:form>
+            <h:outputText value="#{userManagedBean.sort}">Test</h:outputText>
           </div>
         </div>
         <h:form id="post-body">

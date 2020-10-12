@@ -148,6 +148,16 @@ public class RedditSession implements RedditSessionLocal {
   }
 
   @Override
+  public List<Post> getCommunityPosts(Long cId, String searchTerm) {
+    Query q;
+    q = em.createQuery("SELECT p FROM Post p WHERE (p.community.id = :id) "
+            + "AND (LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search)");
+    q.setParameter("id", cId);
+    q.setParameter("search", "%" + searchTerm.toLowerCase() + "%");
+    return q.getResultList();
+  }
+
+  @Override
   public Post updatePost(Post p) throws NotFoundException {
     Post currPost = em.find(Post.class, p.getId());
 

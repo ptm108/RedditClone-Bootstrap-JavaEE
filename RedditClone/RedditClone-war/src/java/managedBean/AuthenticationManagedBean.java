@@ -50,9 +50,9 @@ public class AuthenticationManagedBean implements Serializable {
     }
 
     Redditor r = new Redditor();
-    r.setUsername(username);
+    r.setUsername(username.trim());
     r.setPassword(password);
-    r.setDisplayName(username);
+    r.setDisplayName(username.trim());
     r.setDateJoined(new Date());
 
     try {

@@ -11,6 +11,8 @@ import entity.Redditor;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -41,11 +43,22 @@ public class CommunityManagedBean implements Serializable {
 
   private boolean joined = false;
 
+  private String searchTerm;
+
   @EJB
   private RedditSessionLocal redditSessionLocal;
 
   @Inject
   private AuthenticationManagedBean authenticationManagedBean;
+
+  // custom sorter
+  static class DateSorter implements Comparator<Post> {
+
+    @Override
+    public int compare(Post p1, Post p2) {
+      return p1.getTimeCreated().compareTo(p2.getTimeCreated()) * -1;
+    }
+  }
 
   /**
    * Creates a new instance of CommunityManagedBean
@@ -97,9 +110,9 @@ public class CommunityManagedBean implements Serializable {
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
 
       Community c = new Community();
-      c.setName(cName);
-      c.setTitle(cName);
-      c.setDescription(description);
+      c.setName(cName.trim().toLowerCase());
+      c.setTitle(cName.trim());
+      c.setDescription(description.trim());
       c.setPosts(new ArrayList<>());
 
       members = new ArrayList<>();
@@ -273,6 +286,17 @@ public class CommunityManagedBean implements Serializable {
     return false;
   }
 
+  public void searchPosts() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    try {
+      this.posts = redditSessionLocal.getCommunityPosts(this.cId, searchTerm);
+      Collections.sort(posts, new DateSorter());
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  }
+
   public String getcName() {
     return cName;
   }
@@ -335,6 +359,14 @@ public class CommunityManagedBean implements Serializable {
 
   public void setJoined(boolean joined) {
     this.joined = joined;
+  }
+
+  public String getSearchTerm() {
+    return searchTerm;
+  }
+
+  public void setSearchTerm(String searchTerm) {
+    this.searchTerm = searchTerm;
   }
 
 }

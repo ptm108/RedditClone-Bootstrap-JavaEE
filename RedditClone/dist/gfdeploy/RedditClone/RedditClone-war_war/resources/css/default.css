@@ -30,6 +30,15 @@ h4 {
   padding: 0px;
 }
 
+h6 {
+  font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+  font-size:  10px;
+  font-weight: normal;
+  margin: 2px 0;
+  padding: 0px;
+  color: #b0b0b0
+}
+
 a:link, a:visited {
   color: #dedede;
   text-decoration: none;
