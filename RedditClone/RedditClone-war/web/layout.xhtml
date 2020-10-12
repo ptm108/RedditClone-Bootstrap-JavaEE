@@ -25,7 +25,9 @@
         <c:if test="#{authenticationManagedBean.rId ge 0}">
           <p:submenu label="#{authenticationManagedBean.displayName}"
                      style="float: right; border: 1px solid #dedede; border-radius: 5px; margin: 0 10px;">
-            <p:menuitem value="Profile" url="/RedditClone-war/profile.xhtml" />
+            <p:menuitem value="Profile" url="/RedditClone-war/profile.xhtml">
+              <f:param name="rId" value="#{authenticationManagedBean.rId}" />
+            </p:menuitem>
             <p:separator />
             <p:menuitem value="Settings" url="/RedditClone-war/settings/userSettings.xhtml" />
             <p:separator />

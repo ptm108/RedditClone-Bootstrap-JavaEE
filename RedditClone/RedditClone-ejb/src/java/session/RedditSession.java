@@ -11,6 +11,7 @@ import entity.Post;
 import entity.Redditor;
 import exception.NotFoundException;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -40,8 +41,6 @@ public class RedditSession implements RedditSessionLocal {
       currRedditor.setUsername(r.getUsername());
       currRedditor.setDisplayName(r.getDisplayName());
       currRedditor.setAbout(r.getAbout());
-      currRedditor.setCommunities(r.getCommunities());
-      currRedditor.setPosts(r.getPosts());
     } else {
       throw new NotFoundException("Not found");
     }
@@ -119,7 +118,6 @@ public class RedditSession implements RedditSessionLocal {
   @Override
   public Post createPost(Post p) {
     em.persist(p);
-    em.flush();
     return p;
   }
 
@@ -132,6 +130,21 @@ public class RedditSession implements RedditSessionLocal {
     } else {
       throw new NotFoundException("Post not found");
     }
+  }
+
+  @Override
+  public List<Post> getAllPosts(String searchTerm) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public List<Post> getUserPosts(Long rId, String searchTerm) {
+    Query q;
+    q = em.createQuery("SELECT p FROM Post p WHERE (p.author.id = :id) "
+            + "AND (LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search)");
+    q.setParameter("id", rId);
+    q.setParameter("search", "%" + searchTerm.toLowerCase() + "%");
+    return q.getResultList();
   }
 
   @Override
@@ -152,8 +165,14 @@ public class RedditSession implements RedditSessionLocal {
   @Override
   public Post deletePost(Long pId) throws NotFoundException {
     Post p = em.find(Post.class, pId);
-    em.remove(p);
+    Community c = em.find(Community.class, p.getCommunity().getId());
 
+    if (p == null) {
+      throw new NotFoundException("Post not found");
+    }
+
+    em.remove(p);
+    c.removePost(p);
     return p;
   }
 

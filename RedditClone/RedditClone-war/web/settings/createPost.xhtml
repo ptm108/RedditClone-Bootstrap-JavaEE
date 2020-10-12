@@ -14,7 +14,7 @@
   </ui:define>
 
   <ui:define name="cName">
-    <h:outputText value="r/#{param.cName}" />
+    <h:outputText value="r/#{param.cName}" rendered="#{param.cName != null}"/>
   </ui:define>
 
   <ui:define name="content">

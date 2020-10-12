@@ -10,6 +10,7 @@ import entity.Community;
 import entity.Post;
 import entity.Redditor;
 import exception.NotFoundException;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -38,6 +39,10 @@ public interface RedditSessionLocal {
   public Post createPost(Post p);
 
   public Post getPost(Long pId) throws NotFoundException;
+
+  public List<Post> getAllPosts(String searchTerm);
+
+  public List<Post> getUserPosts(Long rId, String searchTerm);
 
   public Post updatePost(Post p) throws NotFoundException;
 

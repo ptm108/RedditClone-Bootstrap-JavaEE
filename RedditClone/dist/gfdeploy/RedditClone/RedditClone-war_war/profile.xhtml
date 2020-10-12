@@ -1,10 +1,104 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./layout.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <ui:define name="title">
+    #{userManagedBean.r.displayName}'s Profile
+  </ui:define>
 
   <ui:define name="content">
-    Profile
+    <div class="p-grid p-justify-center">
+      <div class="p-col-7 p-md-10">
+        <div style="display: flex; align-items: center; margin-bottom: 10px">
+          <h1 style="margin: 10px 0">Posts:</h1>
+          <div style="display: flex; justify-content: flex-end; flex-grow: 1">
+            <p:linkButton value="Create Post"
+                          href="/RedditClone-war/settings/createPost.xhtml"
+                          rendered="#{authenticationManagedBean.rId eq userManagedBean.rId}"
+                          style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px;"/>
+            <p:commandButton value="Search" id="search"
+                             action="#{userManagedBean.toggleSearch}"
+                             icon="pi pi-search"
+                             update="post-body"
+                             style=""/>
+          </div>
+        </div>
+        <h:form id="post-body">
+          <c:if test="#{userManagedBean.search}">
+            <div class="post" style="align-items: center; padding: 5px 3px;">
+              <p:inputText placeholder="Search" style="flex-grow: 5; margin-right: 10px" value="#{userManagedBean.searchTerm}" autocomplete="off"/>
+              <p:commandButton action="#{userManagedBean.searchPosts}" value="Search" style="flex-grow: 1" update="post-body"/>
+            </div>
+          </c:if>
+          <ui:repeat value="#{userManagedBean.posts}" var="post">
+            <div class="post">
+              <div class="vote">
+                <p:commandButton action="#{userManagedBean.removeVote()}"
+                                 update="growl post-body"
+                                 rendered="#{userManagedBean.isUpvoted(post.id)}"
+                                 style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
+                                 icon="pi pi-chevron-up" title="Remove vote">
+                  <f:param name="pId" value="#{post.id}" />
+                </p:commandButton>
+                <p:commandButton action="#{userManagedBean.upvote()}"
+                                 update="growl post-body"
+                                 rendered="#{not userManagedBean.isUpvoted(post.id)}"
+                                 style="margin: 0 5px; background-color: transparent; border: none"
+                                 icon="pi pi-chevron-up" title="Upvote">
+                  <f:param name="pId" value="#{post.id}" />
+                </p:commandButton>
+
+                <h:outputText value="#{post.upvoters.size() - post.downvoters.size()}" />
+
+                <p:commandButton action="#{userManagedBean.removeVote()}"
+                                 update="growl post-body"
+                                 rendered="#{userManagedBean.isDownvoted(post.id)}"
+                                 style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
+                                 icon="pi pi-chevron-down" title="Remove vote">
+                  <f:param name="pId" value="#{post.id}" />
+                </p:commandButton>
+                <p:commandButton action="#{userManagedBean.downvote()}"
+                                 update="growl post-body"
+                                 rendered="#{not userManagedBean.isDownvoted(post.id)}"
+                                 style="margin: 0 5px; background-color: transparent; border: none"
+                                 icon="pi pi-chevron-down" title="Downvote">
+                  <f:param name="pId" value="#{post.id}" />
+                </p:commandButton>
+              </div>
+              <div class="post-body">
+                <h2 style="margin: 2px 0">
+                  <h:link value="#{post.title}" outcome="/postPage.xhtml" >
+                    <f:param name="cName" value="#{post.community.name}" rendered="#{post.community != null}"/>
+                    <f:param name="pId" value="#{post.id}"/>
+                  </h:link>
+                </h2>
+                <p>
+                  #{post.body}
+                </p>
+              </div>
+            </div>
+          </ui:repeat>
+        </h:form>
+      </div>
+      <div id="info" class="p-col-3 p-d-md-none">
+        <h:form id="info-panel">
+          <p:panel style="margin-bottom:20px">
+            <f:facet name="header">
+              <h2 style="margin: 0">u/#{userManagedBean.r.displayName}</h2>
+            </f:facet>
+            <h3>About:</h3>
+            #{userManagedBean.r.about} <br/><br/>
+            <b>Date joined:</b> #{utilityManagedBean.formatDate(userManagedBean.r.dateJoined)}
+          </p:panel>
+        </h:form>
+      </div>
+    </div>
   </ui:define>
 
 </ui:composition>

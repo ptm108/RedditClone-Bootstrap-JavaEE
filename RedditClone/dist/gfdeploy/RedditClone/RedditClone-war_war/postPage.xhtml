@@ -80,6 +80,10 @@
                   <f:param name="pId" value="#{postManagedBean.pId}" />
                   <f:param name="cName" value="#{param.cName}"/>
                 </p:linkButton>
+                <p:commandButton action="#{postManagedBean.deletePost}"
+                                 rendered="#{authenticationManagedBean.rId.equals(postManagedBean.author.id)}"
+                                 style="margin-left: 8px"
+                                 icon="fa fa-remove" title="Delete post"/>
               </div>
             </div>
           </div>

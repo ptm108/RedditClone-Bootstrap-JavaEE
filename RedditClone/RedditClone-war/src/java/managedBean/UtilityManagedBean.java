@@ -5,16 +5,9 @@
  */
 package managedBean;
 
-import exception.NotFoundException;
-import java.util.Map;
-import javax.ejb.EJB;
+import java.util.Date;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import session.RedditSessionLocal;
 
 /**
  *
@@ -24,58 +17,14 @@ import session.RedditSessionLocal;
 @RequestScoped
 public class UtilityManagedBean {
 
-  @EJB
-  private RedditSessionLocal redditSessionLocal;
-
-  @Inject
-  private AuthenticationManagedBean authenticationManagedBean;
-
   /**
    * Creates a new instance of UtilityManagedBean
    */
   public UtilityManagedBean() {
   }
 
-  public void upvote() {
-    FacesContext context = FacesContext.getCurrentInstance();
-    ExternalContext ec = context.getExternalContext();
-
-    Map<String, String> params = ec.getRequestParameterMap();
-    Long pId = Long.parseLong(params.get("pId"));
-
-    try {
-      redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
-    } catch (NotFoundException e) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-    }
-  }
-
-  public void downvote() {
-    FacesContext context = FacesContext.getCurrentInstance();
-    ExternalContext ec = context.getExternalContext();
-
-    Map<String, String> params = ec.getRequestParameterMap();
-    Long pId = Long.parseLong(params.get("pId"));
-
-    try {
-      redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
-    } catch (NotFoundException e) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-    }
-  }
-
-  public void removeVote() {
-    FacesContext context = FacesContext.getCurrentInstance();
-    ExternalContext ec = context.getExternalContext();
-
-    Map<String, String> params = ec.getRequestParameterMap();
-    Long pId = Long.parseLong(params.get("pId"));
-
-    try {
-      redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
-    } catch (NotFoundException e) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-    }
+  public String formatDate(Date date) {
+    return date.toGMTString().substring(0, 11).trim().replace(" ", "-");
   }
 
 }
