@@ -72,6 +72,15 @@
               <span style="align-self: flex-end; font-style: italic">
                 posted by u/#{postManagedBean.author.displayName} at #{postManagedBean.timeCreated}
               </span>
+              <div style="display: flex; justify-content: flex-end; margin: 5px 0">
+                <p:linkButton outcome="/settings/editPost.xhtml"
+                              rendered="#{authenticationManagedBean.rId.equals(postManagedBean.author.id)}"
+                              style="margin-left: 8px;"
+                              icon="pi pi-pencil" title="Edit Post">
+                  <f:param name="pId" value="#{postManagedBean.pId}" />
+                  <f:param name="cName" value="#{param.cName}"/>
+                </p:linkButton>
+              </div>
             </div>
           </div>
         </h:form>

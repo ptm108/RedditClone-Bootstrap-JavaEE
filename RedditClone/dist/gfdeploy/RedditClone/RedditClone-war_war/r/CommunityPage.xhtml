@@ -64,48 +64,40 @@
         <div class="p-grid p-justify-center">
           <div class="p-col-7 p-md-10">
             <h:form id="post-body">
-              <c:forEach items="#{communityManagedBean.posts}" var="post">
+              <ui:repeat value="#{communityManagedBean.posts}" var="post">
                 <div class="post">
                   <div class="vote">
-                    <c:choose>
-                      <c:when test="#{communityManagedBean.isUpvoted(post.id)}">
-                        <p:commandButton action="#{communityManagedBean.removeVote()}"
-                                         update="growl post-body"
-                                         style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
-                                         icon="pi pi-chevron-up" title="Remove vote">
-                          <f:param name="pId" value="#{post.id}" />
-                        </p:commandButton>
-                      </c:when>
-                      <c:otherwise>
-                        <p:commandButton action="#{communityManagedBean.upvote()}"
-                                         update="growl post-body"
-                                         style="margin: 0 5px; background-color: transparent; border: none"
-                                         icon="pi pi-chevron-up" title="Upvote">
-                          <f:param name="pId" value="#{post.id}" />
-                        </p:commandButton>
-                      </c:otherwise>
-                    </c:choose>
+                    <p:commandButton action="#{communityManagedBean.removeVote()}"
+                                     update="growl post-body"
+                                     rendered="#{communityManagedBean.isUpvoted(post.id)}"
+                                     style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
+                                     icon="pi pi-chevron-up" title="Remove vote">
+                      <f:param name="pId" value="#{post.id}" />
+                    </p:commandButton>
+                    <p:commandButton action="#{communityManagedBean.upvote()}"
+                                     update="growl post-body"
+                                     rendered="#{not communityManagedBean.isUpvoted(post.id)}"
+                                     style="margin: 0 5px; background-color: transparent; border: none"
+                                     icon="pi pi-chevron-up" title="Upvote">
+                      <f:param name="pId" value="#{post.id}" />
+                    </p:commandButton>
 
                     <h:outputText value="#{post.upvoters.size() - post.downvoters.size()}" />
 
-                    <c:choose>
-                      <c:when test="#{communityManagedBean.isDownvoted(post.id)}">
-                        <p:commandButton action="#{communityManagedBean.removeVote()}"
-                                         update="growl post-body"
-                                         style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
-                                         icon="pi pi-chevron-down" title="Remove vote">
-                          <f:param name="pId" value="#{post.id}" />
-                        </p:commandButton>
-                      </c:when>
-                      <c:otherwise>
-                        <p:commandButton action="#{communityManagedBean.downvote()}"
-                                         update="growl post-body"
-                                         style="margin: 0 5px; background-color: transparent; border: none"
-                                         icon="pi pi-chevron-down" title="Downvote">
-                          <f:param name="pId" value="#{post.id}" />
-                        </p:commandButton>
-                      </c:otherwise>
-                    </c:choose>
+                    <p:commandButton action="#{communityManagedBean.removeVote()}"
+                                     update="growl post-body"
+                                     rendered="#{communityManagedBean.isDownvoted(post.id)}"
+                                     style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
+                                     icon="pi pi-chevron-down" title="Remove vote">
+                      <f:param name="pId" value="#{post.id}" />
+                    </p:commandButton>
+                    <p:commandButton action="#{communityManagedBean.downvote()}"
+                                     update="growl post-body"
+                                     rendered="#{not communityManagedBean.isDownvoted(post.id)}"
+                                     style="margin: 0 5px; background-color: transparent; border: none"
+                                     icon="pi pi-chevron-down" title="Downvote">
+                      <f:param name="pId" value="#{post.id}" />
+                    </p:commandButton>
                   </div>
                   <div class="post-body">
                     <h2 style="margin: 2px 0">
@@ -119,7 +111,7 @@
                     </p>
                   </div>
                 </div>
-              </c:forEach>
+              </ui:repeat>
             </h:form>
           </div>
           <div id="info" class="p-col-3 p-d-md-none">

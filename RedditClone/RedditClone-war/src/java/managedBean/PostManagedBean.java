@@ -134,6 +134,24 @@ public class PostManagedBean implements Serializable {
 
   }
 
+  public void editPost() throws IOException {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      p.setTitle(title);
+      p.setBody(body);
+      p.setTimeEdited(new Date());
+      redditSessionLocal.updatePost(p);
+
+      ec.redirect(ec.getRequestContextPath() + "/postPage.xhtml?cName=" + cName + "&pId=" + pId);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+
+  }
+
   public void upvote() throws IOException {
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();

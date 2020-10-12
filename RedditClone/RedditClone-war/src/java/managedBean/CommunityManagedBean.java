@@ -202,7 +202,6 @@ public class CommunityManagedBean implements Serializable {
 
     // reload data on page
     init();
-    ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
 
   }
 
@@ -225,7 +224,6 @@ public class CommunityManagedBean implements Serializable {
 
     // reload data on page
     init();
-    ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
 
   }
 
@@ -248,7 +246,6 @@ public class CommunityManagedBean implements Serializable {
 
     // reload data on page
     init();
-    ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
 
   }
 
