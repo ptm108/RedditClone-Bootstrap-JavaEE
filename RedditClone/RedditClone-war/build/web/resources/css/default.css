@@ -86,3 +86,9 @@ div.reply-body {
   justify-content: space-between;
 }
 
+body .ui-datascroller .ui-datascroller-content {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+

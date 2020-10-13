@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.inject.Inject;
 import session.RedditSessionLocal;
@@ -28,14 +28,14 @@ import session.RedditSessionLocal;
  * @author p.tm
  */
 @Named(value = "homeManagedBean")
-@SessionScoped
+@ViewScoped
 public class HomeManagedBean implements Serializable {
 
   private List<Post> posts;
   private List<Community> communities;
 
   private String searchTerm;
-  private boolean searchPosts = true;
+  private boolean searchPosts = false;
   private boolean searchCommunities = false;
 
   @EJB

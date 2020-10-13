@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -40,10 +42,13 @@ public class CommunityManagedBean implements Serializable {
   private String title;
   private List<Post> posts;
   private List<Redditor> members;
+  private List<Redditor> moderators;
 
   private boolean joined = false;
 
   private String searchTerm;
+
+  private Pattern pattern;
 
   @EJB
   private RedditSessionLocal redditSessionLocal;
@@ -68,6 +73,9 @@ public class CommunityManagedBean implements Serializable {
 
   @PostConstruct
   public void init() {
+    pattern = Pattern.compile("[^A-Za-z]", Pattern.CASE_INSENSITIVE);
+    FacesContext context = FacesContext.getCurrentInstance();
+
     ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
     HttpServletRequest req = (HttpServletRequest) ec.getRequest();
 
@@ -77,27 +85,26 @@ public class CommunityManagedBean implements Serializable {
     if (newName != null) {
       this.cName = newName;
     }
-
     try {
-      Community c;
       // get community name from url path
       // r/<cName>
       if (cName == null) {
         cName = req.getAttribute("cName").toString();
-        c = redditSessionLocal.getCommunity(cName);
-      } else {
-        c = redditSessionLocal.getCommunity(cId);
       }
+
+      Community c = redditSessionLocal.getCommunity(cName);
 
       cId = c.getId();
       title = c.getTitle();
       description = c.getDescription();
       posts = c.getPosts();
       members = c.getMembers();
+      moderators = c.getModerators();
 
       // eager fetch
       posts.size();
       members.size();
+      moderators.size();
 
       // check if current user is member already
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
@@ -113,6 +120,13 @@ public class CommunityManagedBean implements Serializable {
   public void createCommunity() {
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();
+
+    // check name for special characters
+    Matcher m = pattern.matcher(cName);
+    if (m.find()) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Community name cannot have special characters"));
+      return;
+    }
 
     try {
       Redditor currRedditor = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
@@ -305,6 +319,34 @@ public class CommunityManagedBean implements Serializable {
     }
   }
 
+  public boolean isModerator() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    try {
+      Redditor r = redditSessionLocal.getRedditor(authenticationManagedBean.getrId());
+      return this.moderators.contains(r);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+    return false;
+  }
+
+  public void updateCommunity() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    ExternalContext ec = context.getExternalContext();
+
+    try {
+      Community c = redditSessionLocal.getCommunity(cId);
+      c.setTitle(title);
+      c.setDescription(description);
+      redditSessionLocal.updateCommunity(c);
+
+      ec.redirect(ec.getRequestContextPath() + "/r/" + cName);
+    } catch (Exception e) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+    }
+  }
+
   public String getcName() {
     return cName;
   }
@@ -375,6 +417,14 @@ public class CommunityManagedBean implements Serializable {
 
   public void setSearchTerm(String searchTerm) {
     this.searchTerm = searchTerm;
+  }
+
+  public List<Redditor> getModerators() {
+    return moderators;
+  }
+
+  public void setModerators(List<Redditor> moderators) {
+    this.moderators = moderators;
   }
 
 }

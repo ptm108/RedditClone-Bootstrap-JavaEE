@@ -45,7 +45,7 @@
               <p:commandButton action="#{homeManagedBean.searchCommunities}" value="Search" style="flex-grow: 1" update="post-body"/>
             </div>
           </c:if>
-          <ui:repeat value="#{homeManagedBean.posts}" var="post" rendered="#{not homeManagedBean.searchCommunities}">
+          <p:dataScroller value="#{homeManagedBean.posts}" var="post" chunkSize="10" rendered="#{not homeManagedBean.searchCommunities}">
             <div class="post">
               <div class="vote">
                 <p:commandButton action="#{homeManagedBean.removeVote()}"
@@ -106,7 +106,7 @@
                 <h6>#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
               </div>
             </div>
-          </ui:repeat>
+          </p:dataScroller>
           <c:if test="#{homeManagedBean.searchCommunities}">
             <div class="post">
               <div class="post-body">
@@ -124,7 +124,7 @@
               <div class="post-body">
                 <p:link href="/RedditClone-war/r/#{community.name}">
                   <h2 style="margin: 2px 0">
-                    r/#{community.title}
+                    r/#{community.name}
                   </h2>
                 </p:link>
                 <p>

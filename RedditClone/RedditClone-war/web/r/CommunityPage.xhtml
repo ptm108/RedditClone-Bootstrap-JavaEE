@@ -134,6 +134,12 @@
                   Description:<br />
                   #{communityManagedBean.description}
                 </h:panelGrid>
+                <p:linkButton value="Edit Community"
+                              href="/RedditClone-war/settings/editCommunity.xhtml"
+                              rendered="#{authenticationManagedBean.rId gt 0 and communityManagedBean.isModerator()}"
+                              style="width: 100%; margin: 10px 0;">
+                  <f:param name="cName" value="#{communityManagedBean.cName}"/>
+                </p:linkButton>
 
                 <f:facet name="footer">
                   <h:outputText value="#{communityManagedBean.members.size()} members" />

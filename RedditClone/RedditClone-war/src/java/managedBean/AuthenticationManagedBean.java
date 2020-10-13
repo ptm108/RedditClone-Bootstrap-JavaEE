@@ -8,7 +8,13 @@ package managedBean;
 import entity.Redditor;
 import exception.NotFoundException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -23,6 +29,11 @@ import session.RedditSessionLocal;
 @Named(value = "authenticationManagedBean")
 @SessionScoped
 public class AuthenticationManagedBean implements Serializable {
+
+  // hashing variables
+  private final byte[] salt = "is3106".getBytes();
+  private final int iterations = 1000;
+  private final int keyLength = 512;
 
   private String displayName;
   private String about;
@@ -49,9 +60,12 @@ public class AuthenticationManagedBean implements Serializable {
       return null;
     }
 
+    byte[] hashedPwBytes = hashPassword(password.toCharArray(), salt, iterations, keyLength);
+    String hashedPassword = new String(hashedPwBytes, StandardCharsets.UTF_8);
+
     Redditor r = new Redditor();
     r.setUsername(username.trim());
-    r.setPassword(password);
+    r.setPassword(hashedPassword);
     r.setDisplayName(username.trim());
     r.setDateJoined(new Date());
 
@@ -81,7 +95,10 @@ public class AuthenticationManagedBean implements Serializable {
     try {
       Redditor r = redditSessionLocal.getRedditor(username);
 
-      if (r.getPassword().equals(password)) {
+      byte[] hashedPwBytes = hashPassword(password.toCharArray(), salt, iterations, keyLength);
+      String hashedPassword = new String(hashedPwBytes, StandardCharsets.UTF_8);
+
+      if (r.getPassword().equals(hashedPassword)) {
         rId = r.getId();
         displayName = r.getDisplayName();
         about = r.getAbout();
@@ -139,10 +156,13 @@ public class AuthenticationManagedBean implements Serializable {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Passwords do not match"));
     }
 
+    byte[] hashedPwBytes = hashPassword(password.toCharArray(), salt, iterations, keyLength);
+    String hashedPassword = new String(hashedPwBytes, StandardCharsets.UTF_8);
+
     try {
       Redditor r = redditSessionLocal.getRedditor(rId);
 
-      r.setPassword(password);
+      r.setPassword(hashedPassword);
 
       password = null;
       password2 = null;
@@ -156,7 +176,20 @@ public class AuthenticationManagedBean implements Serializable {
       password2 = null;
     }
 
-  } //end register
+  } //end update password
+
+  public byte[] hashPassword(final char[] password, final byte[] salt, final int iterations, final int keyLength) {
+
+    try {
+      SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+      PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, keyLength);
+      SecretKey key = skf.generateSecret(spec);
+      byte[] res = key.getEncoded();
+      return res;
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   public String getUsername() {
     return username;

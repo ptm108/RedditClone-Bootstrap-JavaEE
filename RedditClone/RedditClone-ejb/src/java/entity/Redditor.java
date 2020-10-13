@@ -40,6 +40,7 @@ public class Redditor implements Serializable {
 
   @Temporal(TemporalType.DATE)
   private Date dateJoined;
+  @Column(unique = true, nullable = false)
   private String displayName;
   private String about;
 
