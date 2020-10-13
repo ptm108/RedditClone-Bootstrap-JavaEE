@@ -10,7 +10,9 @@ import entity.Community;
 import entity.Post;
 import entity.Redditor;
 import exception.NotFoundException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +26,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
 import session.RedditSessionLocal;
 
 /**
@@ -48,6 +52,8 @@ public class PostManagedBean implements Serializable {
   private Redditor author;
 
   private Date timeCreated;
+
+  private UploadedFile uploadedFile;
 
   @EJB
   private RedditSessionLocal redditSessionLocal;
@@ -116,6 +122,15 @@ public class PostManagedBean implements Serializable {
         p.setUpvoters(new ArrayList<>());
         p.setDownvoters(new ArrayList<>());
 
+        // convert image to blob
+        InputStream input = uploadedFile.getInputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[10240];
+        for (int length = 0; (length = input.read(buffer)) > 0;) {
+          output.write(buffer, 0, length);
+        }
+        p.setImage(output.toByteArray());
+
         p = redditSessionLocal.createPost(p);
 
         // update community
@@ -146,6 +161,15 @@ public class PostManagedBean implements Serializable {
         p.setComments(new ArrayList<>());
         p.setUpvoters(new ArrayList<>());
         p.setDownvoters(new ArrayList<>());
+
+        // convert image to blob
+        InputStream input = uploadedFile.getInputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[10240];
+        for (int length = 0; (length = input.read(buffer)) > 0;) {
+          output.write(buffer, 0, length);
+        }
+        p.setImage(output.toByteArray());
 
         p = redditSessionLocal.createPost(p);
         // update redditor
@@ -267,6 +291,13 @@ public class PostManagedBean implements Serializable {
     return false;
   }
 
+  public void fileUploadListener(FileUploadEvent event) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    this.uploadedFile = event.getFile();
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Image uploaded"));
+  }
+
   public String getTitle() {
     return title;
   }
@@ -345,6 +376,14 @@ public class PostManagedBean implements Serializable {
 
   public void setTimeCreated(Date timeCreated) {
     this.timeCreated = timeCreated;
+  }
+
+  public UploadedFile getUploadedFile() {
+    return uploadedFile;
+  }
+
+  public void setUploadedFile(UploadedFile uploadedFile) {
+    this.uploadedFile = uploadedFile;
   }
 
 }

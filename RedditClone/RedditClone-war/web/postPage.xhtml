@@ -59,6 +59,11 @@
               </c:choose>
             </div>
             <div class="post-body">
+              <div class="image">
+                <p:graphicImage id="post-image" class="inpost-image" value="#{imageBean.image}">
+                  <f:param name="pId" value="#{postManagedBean.pId}" />
+                </p:graphicImage>
+              </div>
               <h2 style="margin: 2px 0">#{postManagedBean.title}</h2>
               <p>
                 #{postManagedBean.body}

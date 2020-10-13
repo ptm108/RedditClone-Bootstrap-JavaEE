@@ -81,6 +81,11 @@
                   <f:param name="pId" value="#{post.id}" />
                 </p:commandButton>
               </div>
+              <div class="image">
+                <p:graphicImage id="post-image" class="post-image" value="#{imageBean.image}">
+                  <f:param name="pId" value="#{post.id}" />
+                </p:graphicImage>
+              </div>
               <div class="post-body">
                 <h2 style="margin: 2px 0">
                   <h:link value="#{post.title}" outcome="/postPage.xhtml" rendered="#{not empty post.community}">

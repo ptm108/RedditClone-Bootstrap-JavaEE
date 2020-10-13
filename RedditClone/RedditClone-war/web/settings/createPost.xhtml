@@ -7,8 +7,6 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-  <ui:param name="cName" value="r/#{param.cName}" />
-
   <ui:define name="title">
     Reddit Create Post
   </ui:define>
@@ -20,7 +18,7 @@
   <ui:define name="content">
     <div class="p-grid">
       <div class="p-col-6 p-offset-3">
-        <h:form>
+        <h:form id="create-post" enctype="multipart/form-data">
           <p:panel id="register" header="Create a Post">
             <div class="ui-fluid">
               <div class="p-field">
@@ -38,6 +36,12 @@
                 <p:inputTextarea id="body"
                                  value="#{postManagedBean.body}"
                                  rows="4"/>
+              </div>
+              <div class="p-field">
+                <p:outputLabel for="upload" value="Upload image: " /><br/>
+                <p:fileUpload id="upload" value="#{postManagedBean.uploadedFile}"
+                              listener="#{postManagedBean.fileUploadListener}"
+                              mode="advanced" skinSimple="true" /><br />
               </div>
             </div>
 
