@@ -41,6 +41,9 @@
                 <p:outputLabel for="upload" value="Upload image: " /><br/>
                 <p:fileUpload id="upload" value="#{postManagedBean.uploadedFile}"
                               listener="#{postManagedBean.fileUploadListener}"
+                              fileLimit="1" label="Browse" update="growl"
+                              sizeLimit="2000000"
+                              allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
                               mode="advanced" skinSimple="true" /><br />
               </div>
             </div>
