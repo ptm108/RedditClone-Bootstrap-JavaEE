@@ -115,30 +115,6 @@
               </h4>
               <h:outputText value="#{comment.body}" />
 
-              <ui:repeat value="#{comment.children}" var="reply">
-                <div class="reply-body">
-                  <div>
-                    <h4 style="margin-bottom: 5px">
-                      <h:link outcome="profile.xhtml" value="u/#{reply.author.displayName}">
-                        <f:param name="rId" value="#{reply.author.id}" />
-                      </h:link>
-                      #{utilityManagedBean.getTimeDifference(reply.timeCreated)} ago
-                    </h4>
-                    <h:outputText value="#{reply.body}" />
-                  </div>
-                  <div style="align-self: center">
-                    <p:commandButton action="#{commentManagedBean.deleteReply}"
-                                     rendered="#{authenticationManagedBean.rId.equals(reply.author.id)}"
-                                     update="growl :comment-body" process="@this"
-                                     style="margin-left: 8px;"
-                                     icon="fa fa-remove" title="Delete Comment">
-                      <f:param name="parentCId" value="#{comment.id}"/>
-                      <f:param name="cId" value="#{reply.id}" />
-                    </p:commandButton>
-                  </div>
-                </div>
-              </ui:repeat>
-
               <div style="display: flex; justify-content: flex-end; margin-bottom: 10px">
                 <p:commandButton action="#{commentManagedBean.selectReply}"
                                  rendered="#{authenticationManagedBean.rId gt 0}"
@@ -206,6 +182,32 @@
                                    style="flex-grow: 1; width: 50%"/>
                 </div>
               </p:panel>
+
+
+
+              <ui:repeat value="#{comment.children}" var="reply">
+                <div class="reply-body">
+                  <div>
+                    <h4 style="margin-bottom: 5px">
+                      <h:link outcome="profile.xhtml" value="u/#{reply.author.displayName}">
+                        <f:param name="rId" value="#{reply.author.id}" />
+                      </h:link>
+                      #{utilityManagedBean.getTimeDifference(reply.timeCreated)} ago
+                    </h4>
+                    <h:outputText value="#{reply.body}" />
+                  </div>
+                  <div style="align-self: center">
+                    <p:commandButton action="#{commentManagedBean.deleteReply}"
+                                     rendered="#{authenticationManagedBean.rId.equals(reply.author.id)}"
+                                     update="growl :comment-body" process="@this"
+                                     style="margin-left: 8px;"
+                                     icon="fa fa-remove" title="Delete Comment">
+                      <f:param name="parentCId" value="#{comment.id}"/>
+                      <f:param name="cId" value="#{reply.id}" />
+                    </p:commandButton>
+                  </div>
+                </div>
+              </ui:repeat>
             </div>
           </ui:repeat>
         </h:form>
@@ -230,7 +232,7 @@
           </p:panel>
           <p:panel style="margin-bottom:20px" rendered="#{empty param.cName}">
             <f:facet name="header">
-              <h2 style="margin: 0">u/#{postManagedBean.author.displayName}</h2>
+              <h2 style="margin: 0">u/#{postManagedBean.author.displayName}'s Userboard</h2>
             </f:facet>
             <h3>About:</h3>
             #{postManagedBean.author.about} <br/><br/>
