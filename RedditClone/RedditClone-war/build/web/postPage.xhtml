@@ -64,10 +64,8 @@
                   <f:param name="pId" value="#{postManagedBean.pId}" />
                 </p:graphicImage>
               </div>
-              <h2 style="margin: 2px 0">#{postManagedBean.title}</h2>
-              <p>
-                #{postManagedBean.body}
-              </p>
+              <h2 style="margin: 10px 0 5px">#{postManagedBean.title}</h2>
+              <p class="preformatted">#{postManagedBean.body}</p>
               <div style="align-self: flex-end; font-style: italic">
                 posted by
                 <p:link href="profile.xhtml" value="u/#{postManagedBean.author.displayName}">

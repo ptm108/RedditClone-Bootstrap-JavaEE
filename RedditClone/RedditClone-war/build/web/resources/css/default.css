@@ -79,12 +79,12 @@ div.image {
 }
 
 .post-image {
-  max-height: inherit;
+  max-height: 100%;
   max-width: 120px;
 }
 
 .inpost-image {
-  max-width: inherit;
+  max-width: 100%;
   max-height: 400px;
 }
 
@@ -93,6 +93,7 @@ div.post-body {
   flex-direction: column;
   padding: 10px;
   flex-grow: 10000;
+  max-width: inherit;
 }
 
 div.reply-body {
@@ -107,5 +108,9 @@ body .ui-datascroller .ui-datascroller-content {
   padding: 0;
   border: none;
   background-color: transparent;
+}
+
+.preformatted {
+  white-space: pre-wrap;
 }
 

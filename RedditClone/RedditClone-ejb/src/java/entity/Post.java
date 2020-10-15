@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -35,7 +35,8 @@ public class Post implements Serializable {
 
   private String title;
 
-  @Size(min = 1, max = 8000)
+  @Lob
+  @Column(length = 8096)
   private String body;
 
   @Temporal(TemporalType.TIMESTAMP)

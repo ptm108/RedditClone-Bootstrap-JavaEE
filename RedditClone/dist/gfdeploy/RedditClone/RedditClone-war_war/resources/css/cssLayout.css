@@ -1,0 +1,62 @@
+
+#top {
+  position: relative;
+  color: white;
+  padding: 5px;
+  margin: 0px 0px 10px 0px;
+}
+
+#bottom {
+  position: relative;
+  padding: 5px;
+  margin: 10px 0px 0px 0px;
+}
+
+#left {
+  float: left;
+  padding: 5px;
+  width: 150px;
+}
+
+#right {
+  float: right;
+  padding: 5px;
+  width: 150px;
+}
+
+.center_content {
+  /*position: relative;*/
+}
+
+.left_content {
+  padding: 5px;
+  margin-left: 170px;
+}
+
+.right_content {
+  padding: 5px;
+  margin: 0px 170px 0px 170px;
+}
+
+#top a:link, #top a:visited {
+  color: white;
+  font-weight : bold;
+  text-decoration: none;
+}
+
+#top a:link:hover, #top a:visited:hover  {
+  color: black;
+  font-weight : bold;
+  text-decoration : underline;
+}
+
+.box,
+.sample-layout > div {
+  background-color: #cce4f7;
+  text-align: center;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-radius: 4px;
+}
+
+

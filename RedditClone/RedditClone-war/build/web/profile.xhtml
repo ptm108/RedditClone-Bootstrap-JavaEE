@@ -98,8 +98,9 @@
                   </h:link>
                 </h2>
                 <p>
-                  #{post.body}
+                  #{post.body.length() > 255 ? post.body.substring(0, 255).concat("...") : post.body}
                 </p>
+                <h6 style="align-self: flex-end">#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
               </div>
             </div>
           </ui:repeat>

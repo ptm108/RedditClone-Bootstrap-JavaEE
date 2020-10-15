@@ -99,6 +99,23 @@ public class PostManagedBean implements Serializable {
 
   }
 
+  public void refreshPost() {
+    try {
+      Post p = redditSessionLocal.getPost(pId);
+      this.title = p.getTitle();
+      this.body = p.getBody();
+      this.upvoters = p.getUpvoters();
+      this.downvoters = p.getDownvoters();
+      this.comments = p.getComments();
+      this.community = p.getCommunity();
+      this.author = p.getAuthor();
+      this.timeCreated = p.getTimeCreated();
+
+    } catch (Exception e) {
+      // do nothing
+    }
+  }
+
   public void createPost() throws IOException {
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext ec = context.getExternalContext();
@@ -123,13 +140,15 @@ public class PostManagedBean implements Serializable {
         p.setDownvoters(new ArrayList<>());
 
         // convert image to blob
-        InputStream input = uploadedFile.getInputStream();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[10240];
-        for (int length = 0; (length = input.read(buffer)) > 0;) {
-          output.write(buffer, 0, length);
+        if (uploadedFile != null) {
+          InputStream input = uploadedFile.getInputStream();
+          ByteArrayOutputStream output = new ByteArrayOutputStream();
+          byte[] buffer = new byte[10240];
+          for (int length = 0; (length = input.read(buffer)) > 0;) {
+            output.write(buffer, 0, length);
+          }
+          p.setImage(output.toByteArray());
         }
-        p.setImage(output.toByteArray());
 
         p = redditSessionLocal.createPost(p);
 
@@ -163,13 +182,15 @@ public class PostManagedBean implements Serializable {
         p.setDownvoters(new ArrayList<>());
 
         // convert image to blob
-        InputStream input = uploadedFile.getInputStream();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[10240];
-        for (int length = 0; (length = input.read(buffer)) > 0;) {
-          output.write(buffer, 0, length);
+        if (uploadedFile != null) {
+          InputStream input = uploadedFile.getInputStream();
+          ByteArrayOutputStream output = new ByteArrayOutputStream();
+          byte[] buffer = new byte[10240];
+          for (int length = 0; (length = input.read(buffer)) > 0;) {
+            output.write(buffer, 0, length);
+          }
+          p.setImage(output.toByteArray());
         }
-        p.setImage(output.toByteArray());
 
         p = redditSessionLocal.createPost(p);
         // update redditor
@@ -225,9 +246,8 @@ public class PostManagedBean implements Serializable {
     }
 
     try {
-      Post p = redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
-      this.upvoters = p.getUpvoters();
-      this.downvoters = p.getDownvoters();
+      redditSessionLocal.upvotePost(authenticationManagedBean.getrId(), pId);
+      refreshPost();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -242,9 +262,8 @@ public class PostManagedBean implements Serializable {
     }
 
     try {
-      Post p = redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
-      this.upvoters = p.getUpvoters();
-      this.downvoters = p.getDownvoters();
+      redditSessionLocal.downVotePost(authenticationManagedBean.getrId(), pId);
+      refreshPost();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -259,9 +278,8 @@ public class PostManagedBean implements Serializable {
     }
 
     try {
-      Post p = redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
-      this.upvoters = p.getUpvoters();
-      this.downvoters = p.getDownvoters();
+      redditSessionLocal.removeVote(authenticationManagedBean.getrId(), pId);
+      refreshPost();
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }

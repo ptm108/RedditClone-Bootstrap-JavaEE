@@ -86,16 +86,13 @@
                 </p:graphicImage>
               </div>
               <div class="post-body">
-                <h6>
-                  <p:link value="r/#{post.community.name}" href="/RedditClone-war/r/#{post.community.name}"
-                          rendered="#{not empty post.community}"
-                          style="color: "/>
-                  <p:link value="u/#{post.author.displayName}" outcome="/profile.xhtml"
-                          rendered="#{empty post.community}">
-                    <f:param name="rId" value="#{post.author.id}" />
-                  </p:link>
-                </h6>
-                <h2 style="margin: 2px 0">
+                <p:link value="r/#{post.community.name}" href="/RedditClone-war/r/#{post.community.name}"
+                        rendered="#{not empty post.community}"/>
+                <p:link value=" • Posted by u/#{post.author.displayName}" outcome="/profile.xhtml"
+                        style="font-size: 10px; color: #b0b0b0">
+                  <f:param name="rId" value="#{post.author.id}" />
+                </p:link>
+                <h2 style="margin: 5px 0">
                   <h:link value="#{post.title}" outcome="/postPage.xhtml" rendered="#{not empty post.community}">
                     <f:param name="cName" value="#{post.community.name}"/>
                     <f:param name="pId" value="#{post.id}"/>
@@ -106,7 +103,7 @@
                   </h:link>
                 </h2>
                 <p>
-                  #{post.body}
+                  #{post.body.length() > 255 ? post.body.substring(0, 255).concat("...") : post.body}
                 </p>
                 <h6>#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
               </div>
