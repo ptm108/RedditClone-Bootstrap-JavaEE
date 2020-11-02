@@ -5,7 +5,6 @@
                 template="./layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
@@ -99,53 +98,53 @@
                   <h:graphicImage id="post-image" class="post-image" value="data:image/jpg;base64,#{post.image}" rendered="#{post.image != null}"/>
                 </div>
                 <div class="post-body">
-                  <p:link value="r/#{post.community.name}" href="/RedditClone-war/r/#{post.community.name}"
-                          rendered="#{not empty post.community}"/>
-                  <p:link value=" • Posted by u/#{post.author.displayName}" outcome="/profile.xhtml"
-                          style="font-size: 10px; color: #b0b0b0">
-                    <f:param name="rId" value="#{post.author.id}" />
-                  </p:link>
-                  <h2 style="margin: 5px 0">
-                    <h:link value="#{post.title}" outcome="/postPage.xhtml" rendered="#{not empty post.community}">
+                  <p style="margin: 0">
+                    <ui:fragment rendered="#{not empty post.community}">
+                      <a class="white-a" style="font-size: 14px" href="/RedditClone-war/r/#{post.community.name}">r/#{post.community.name}</a>
+                    </ui:fragment>
+                    <span style="font-size: 10px; color: #b0b0b0"> • Posted by <a class="white-a" href="/RedditClone-war/profile.xhtml?rId=#{post.author.id}" >u/#{post.author.displayName}</a> #{utilityManagedBean.getTimeDifference(post.timeCreated)} ago</span>
+                  </p>
+                  <h3 style="margin: 5px 0">
+                    <h:link class="white-a" value="#{post.title}" outcome="/postPage.xhtml" rendered="#{not empty post.community}">
                       <f:param name="cName" value="#{post.community.name}"/>
                       <f:param name="pId" value="#{post.id}"/>
                     </h:link>
-                    <h:link value="#{post.title}" outcome="/postPage.xhtml" rendered="#{empty post.community}">
+                    <h:link class="white-a" value="#{post.title}" outcome="/postPage.xhtml" rendered="#{empty post.community}">
                       <f:param name="rId" value="#{post.author.id}"/>
                       <f:param name="pId" value="#{post.id}"/>
                     </h:link>
-                  </h2>
-                  <p>
+                  </h3>
+                  <p style="margin-left: 3px" >
                     #{post.body.length() > 255 ? post.body.substring(0, 255).concat("...") : post.body}
                   </p>
-                  <h6>#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
+                  <h7>#{utilityManagedBean.getCommentCount(post.comments)} comments</h7>
                 </div>
               </div>
             </ui:repeat>
             <c:if test="#{homeManagedBean.searchCommunities}">
               <div class="post">
                 <div class="post-body">
-                  <h3>
+                  <h5 style="margin: 0">
                     Can't find a community?
-                    <h:link outcome="settings/NewCommunity.xhtml">
+                    <h:link class="white-a" outcome="settings/NewCommunity.xhtml">
                       Create one now
                     </h:link>
-                  </h3>
+                  </h5>
                 </div>
               </div>
             </c:if>
             <ui:repeat value="#{homeManagedBean.communities}" var="community" rendered="#{homeManagedBean.searchCommunities}">
               <div class="post">
                 <div class="post-body">
-                  <p:link href="/RedditClone-war/r/#{community.name}">
-                    <h2 style="margin: 2px 0">
+                  <a class="white-a" href="/RedditClone-war/r/#{community.name}">
+                    <h4 style="margin: 2px 0">
                       r/#{community.name}
-                    </h2>
-                  </p:link>
+                    </h4>
+                  </a>
                   <p>
                     #{community.description}
                   </p>
-                  <h4>#{community.members.size()} members</h4>
+                  <h6>#{community.members.size()} member(s)</h6>
                 </div>
               </div>
             </ui:repeat>
