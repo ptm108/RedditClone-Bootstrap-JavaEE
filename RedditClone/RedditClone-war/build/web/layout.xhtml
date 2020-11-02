@@ -15,18 +15,18 @@
     <h:outputStylesheet name="css/default.css"/>
   </h:head>
 
-  <h:body class="bg-secondary">
+  <h:body class="body">
     <p:growl id="growl" showDetail="true" globalOnly="true"/>
     <h:form id="navbar">
-      <nav class="navbar navbar-dar bg-dark" style="padding: 0 16px">
-        <a class="navbar-brand home" href="/RedditClone-war/" style="padding: 5px; border-radius: 5px">
-          <i class="fab fa-reddit-square"></i>
+      <nav class="navbar navbar-dar" style="padding: 0 16px; background-color: rgb(25, 25, 25)">
+        <a class="navbar-brand home " href="/RedditClone-war/" style="padding: 5px; border-radius: 5px">
+          <i class="fab fa-reddit-alien"></i>
           Reddit
         </a>
         <span class="navbar-text">
           <c:if test="#{authenticationManagedBean.rId lt 0}">
-            <a href="/RedditClone-war/register.xhtml" role="button" class="btn btn-outline-light">Register</a>
-            <a href="/RedditClone-war/login.xhtml" role="button" class="btn btn-primary">Login</a>
+            <a href="/RedditClone-war/login.xhtml" role="button" class="btn btn-outline-light" style="min-width: 120px; margin-right: 10px">Login</a>
+            <a href="/RedditClone-war/register.xhtml" role="button" class="btn btn-primary" style="min-width: 120px;" >Register</a>
           </c:if>
           <c:if test="#{authenticationManagedBean.rId ge 0}">
             <div class="dropdown">
@@ -35,9 +35,9 @@
               </a>
 
               <div class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="dropdownMenuLink" >
-                <a class="dropdown-item btn bg-dark" href="/RedditClone-war/">Home</a>
-                <a class="dropdown-item btn bg-dark" href="/RedditClone-war/profile.xhtml?rId=#{authenticationManagedBean.rId}" >Profile</a>
-                <a class="dropdown-item btn bg-dark" href="/RedditClone-war/settings/userSettings.xhtml" >Settings</a>
+                <a class="dropdown-item btn bg-dark white-a" href="/RedditClone-war/">Home</a>
+                <a class="dropdown-item btn bg-dark white-a" href="/RedditClone-war/profile.xhtml?rId=#{authenticationManagedBean.rId}" >Profile</a>
+                <a class="dropdown-item btn bg-dark white-a" href="/RedditClone-war/settings/userSettings.xhtml" >Settings</a>
                 <div class="dropdown-divider"></div>
                 <div style="display: flex; justify-content: center">
                   <h:commandButton value="Logout" action="#{authenticationManagedBean.logout}" class="btn btn-danger" style="align-text: center; width: 90%"/>

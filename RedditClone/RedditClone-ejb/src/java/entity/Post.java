@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -166,8 +167,11 @@ public class Post implements Serializable {
     this.id = id;
   }
 
-  public byte[] getImage() {
-    return image;
+  public String getImage() {
+    if (this.image != null) {
+      return new String(Base64.getEncoder().encode(this.image));
+    }
+    return null;
   }
 
   public void setImage(byte[] image) {

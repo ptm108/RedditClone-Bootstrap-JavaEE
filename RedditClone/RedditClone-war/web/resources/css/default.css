@@ -1,9 +1,10 @@
-body {
+.body {
   font-size: 12px;
-  background-color: #3f3f3f;
+  background-color: #040404;
   font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
-  color: #dedede; 
   margin: 0;
+  color: rgb(210, 212, 215);
+  height: 100vh;
 }
 
 h1 {
@@ -39,24 +40,29 @@ h6 {
   color: #b0b0b0
 }
 
-a:link, a:visited {
+a.white-a:link, a.white-a:visited {
   color: #dedede;
   text-decoration: none;
 }
 
-a:link:hover, a:visited:hover  {
+a.white-a:link:hover, a.white-a:visited:hover  {
+  text-decoration : underline;
+}
+
+.home:link, .home:visited {
   color: #dedede;
   text-decoration : none;
 }
 
 .home:link:hover, .home:visited:hover {
-  background-color: #8e9499;
+  color: #dedede;
+  text-decoration : none;
 }
 
 div.post {
   display: flex;
   width: 100%;
-  background-color: rgb(50, 50, 50);
+  background-color: rgb(25, 25, 25);
   border: 0.5px solid rgb(52, 52, 54);
   border-radius: 5px;
   margin-bottom: 20px;
@@ -72,7 +78,7 @@ div.vote {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  background-color: rgb(25, 25, 25);
+  background-color: rgb(21, 21, 21);
   border-radius: 5px 0 0 5px;
 }
 
@@ -86,6 +92,7 @@ div.image {
 .post-image {
   max-height: 100%;
   max-width: 120px;
+  object-fit: cover;
 }
 
 .inpost-image {
@@ -97,7 +104,7 @@ div.post-body {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  flex-grow: 10000;
+  flex-grow: 100;
   max-width: inherit;
 }
 

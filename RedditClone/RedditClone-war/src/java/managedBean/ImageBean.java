@@ -39,7 +39,7 @@ public class ImageBean {
       String pId = context.getExternalContext().getRequestParameterMap().get("pId");
       try {
         Post p = redditSessionLocal.getPost(Long.valueOf(pId));
-        return new DefaultStreamedContent(new ByteArrayInputStream(p.getImage()));
+        return new DefaultStreamedContent(new ByteArrayInputStream("hello".getBytes()));
       } catch (Exception e) {
         // do nothing
       }

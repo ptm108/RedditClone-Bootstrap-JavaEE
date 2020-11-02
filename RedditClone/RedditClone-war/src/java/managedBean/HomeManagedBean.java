@@ -157,7 +157,8 @@ public class HomeManagedBean implements Serializable {
   public void toggleSearchCommunity() {
     this.searchTerm = "";
     this.searchPosts = false;
-    this.searchCommunities = !this.searchPosts;
+
+    this.searchCommunities = !this.searchCommunities;
   }
 
   public void searchPosts() {
