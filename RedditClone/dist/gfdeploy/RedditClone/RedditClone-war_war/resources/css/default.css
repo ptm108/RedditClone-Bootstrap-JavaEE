@@ -46,8 +46,13 @@ a:link, a:visited {
 
 a:link:hover, a:visited:hover  {
   color: #dedede;
-  text-decoration : underline;
+  text-decoration : none;
 }
+
+.home:link:hover, .home:visited:hover {
+  background-color: #8e9499;
+}
+
 div.post {
   display: flex;
   width: 100%;
