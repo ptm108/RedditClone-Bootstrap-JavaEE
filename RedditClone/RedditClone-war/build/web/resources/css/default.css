@@ -138,3 +138,17 @@ ul {
   padding: 0;
 }
 
+.customDropdown {
+  width: 125px; 
+  margin-left: 5px; 
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  display: inline-block;
+  font-weight: 400;
+  padding: .400rem .375rem;
+  min-height: 37.61px;
+  color: #dedede;
+  background-color: rgb(25,25,25); 
+  font-size: 14px
+}

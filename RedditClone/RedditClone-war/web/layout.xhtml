@@ -25,8 +25,8 @@
         </a>
         <span class="navbar-text">
           <c:if test="#{authenticationManagedBean.rId lt 0}">
-            <a href="/RedditClone-war/login.xhtml" role="button" class="btn btn-outline-light" style="min-width: 120px; margin-right: 10px">Login</a>
-            <a href="/RedditClone-war/register.xhtml" role="button" class="btn btn-primary" style="min-width: 120px;" >Register</a>
+            <a href="/RedditClone-war/login.xhtml" role="button" class="btn btn-outline-light" style="min-width: 120px; margin-right: 10px; font-size: 14px">Login</a>
+            <a href="/RedditClone-war/register.xhtml" role="button" class="btn btn-primary" style="min-width: 120px; font-size: 14px" >Register</a>
           </c:if>
           <c:if test="#{authenticationManagedBean.rId ge 0}">
             <div class="dropdown">
