@@ -133,3 +133,8 @@ body .ui-datascroller .ui-datascroller-content {
   background-size: cover;
 }
 
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+

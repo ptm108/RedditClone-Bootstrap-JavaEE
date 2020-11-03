@@ -137,6 +137,10 @@ public class AuthenticationManagedBean implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
     context.getExternalContext().getFlash().setKeepMessages(true);
 
+    if (displayName == null || displayName.equals("")) {
+      return;
+    }
+
     try {
       Redditor r = redditSessionLocal.getRedditor(rId);
 
@@ -144,7 +148,7 @@ public class AuthenticationManagedBean implements Serializable {
       r.setDisplayName(displayName);
 
       redditSessionLocal.updateRedditor(r);
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Profile updated"));
+      context.addMessage("settingsForm:success", new FacesMessage("Profile updated"));
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
     }
@@ -157,6 +161,7 @@ public class AuthenticationManagedBean implements Serializable {
 
     if (!password.equals(password2)) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Passwords do not match"));
+      return;
     }
 
     byte[] hashedPwBytes = hashPassword(password.toCharArray(), salt, iterations, keyLength);

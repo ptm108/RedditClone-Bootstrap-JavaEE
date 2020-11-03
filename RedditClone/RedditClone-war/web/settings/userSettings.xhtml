@@ -3,56 +3,106 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="../layout.xhtml"
-                xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
   <ui:define name="title">Reddit Settings</ui:define>
   <ui:define name="content">
-    <div class="p-grid">
-      <div class="p-col-6 p-offset-3">
-        <h2>Settings</h2>
-        <p:panel id="toggleable1" header="User Settings" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
-          <h:form id="user-settings">
-            <div class="ui-fluid">
-              <div class="p-field">
-                <p:outputLabel for="displayname" value="Display Name: " />
-                <p:inputText id="displayname"
-                             value="#{authenticationManagedBean.displayName}"/>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <h2>Settings</h2>
+          <div class="accordian" id="accordian" style="margin-bottom: 20px">
+            <div class="card" style="border: none">
+              <div class="card-header" id="userSettings" style="padding: 0; background-color: rgb(21, 21, 21)">
+                <h4 style="margin: 0">
+                  <button class="btn btn-block text-left" type="button"
+                          data-toggle="collapse" data-target="#userSettingsCollapse"
+                          aria-expanded="true" aria-controls="userSettingsCollapse"
+                          style="color: #dedede">
+                    User Settings
+                  </button>
+                </h4>
               </div>
-              <div class="p-field">
-                <p:outputLabel for="about" value="About: " />
-                <p:inputTextarea id="about"
-                                 value="#{authenticationManagedBean.about}"
-                                 rows="4"/>
+              <div id="userSettingsCollapse" class="collapse show" aria-labelledby="userSettings" data-parent="#accordian">
+                <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                  <h:form id="settingsForm">
+                    <div class="form-group">
+                      <h:outputLabel for="displayname" value="Display Name:" style="font-size: 14px"/>
+                      <h:inputText id="displayname"
+                                   class="form-control"
+                                   value="#{authenticationManagedBean.displayName}"
+                                   required="true"
+                                   requiredMessage="Display Name is required"/>
+                      <h:message id="displayNameMessage" for="displayname" style="color: red" /><br/>
+                      <h:outputLabel for="about" value="About:" style="font-size: 14px; margin-top: 10px"/>
+                      <h:inputTextarea id="about"
+                                       class="form-control"
+                                       value="#{authenticationManagedBean.about}"
+                                       rows="4"/>
+                    </div>
+                    <h:commandButton value="Save"
+                                     type="submit"
+                                     action="#{authenticationManagedBean.updateProfile}"
+                                     class="btn btn-primary" style="min-width: 120px; font-size: 14px">
+                      <f:ajax execute="@form"
+                              render="navbar settingsForm"/>
+                    </h:commandButton>
+
+                    <h:messages id="success" infoClass="alert alert-success" errorClass="alert alert-danger" style="margin: 10px 0" showSummary="false" showDetail="true"/>
+                  </h:form>
+                </div>
               </div>
             </div>
-            <p:commandButton value="Save"
-                             action="#{authenticationManagedBean.updateProfile}"
-                             update="growl navbar"/>
-          </h:form>
-        </p:panel>
-        <p:panel id="toggleable2" header="Password Settings" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
-          <h:form id="password-settings">
-            <div class="ui-fluid">
-              <div class="p-field">
-                <p:outputLabel for="password" value="Enter new password: " />
-                <p:inputText id="password"
-                             type="password"
-                             value="#{authenticationManagedBean.password}"/>
+          </div>
+
+          <div class="accordian" id="accordian2" style="margin-bottom: 20px">
+            <div class="card" style="border: none">
+              <div class="card-header" id="passwordSettings" style="padding: 0; background-color: rgb(21, 21, 21)">
+                <h4 style="margin: 0">
+                  <button class="btn btn-block text-left white-a" type="button"
+                          data-toggle="collapse" data-target="#passwordSettingsCollapse"
+                          aria-expanded="true" aria-controls="passwordSettingsCollapse"
+                          style="color: #dedede">
+                    Password Settings
+                  </button>
+                </h4>
               </div>
-              <div class="p-field">
-                <p:outputLabel for="password2" value="Re-enter new password: " />
-                <p:inputText id="password2"
-                             type="password"
-                             value="#{authenticationManagedBean.password2}"/>
+              <div id="passwordSettingsCollapse" class="collapse show" aria-labelledby="passwordSettings" data-parent="#accordian2">
+                <div class="card-body"  style="background-color: rgb(25, 25, 25)">
+                  <h:form id="passwordForm">
+                    <div class="form-group">
+                      <h:outputLabel for="password" value="Enter new password: " style="font-size: 14px"/>
+                      <h:inputSecret id="password"
+                                     class="form-control"
+                                     value="#{authenticationManagedBean.password}"
+                                     required="true"
+                                     requiredMessage="Enter your password"/>
+                      <h:message id="passwordMessage" for="password" style="color: red" /><br/>
+                      <h:outputLabel for="password2" value="Re-enter new password: " style="font-size: 14px"/>
+                      <h:inputSecret id="password2"
+                                     class="form-control"
+                                     value="#{authenticationManagedBean.password2}"
+                                     required="true"
+                                     requiredMessage="Enter your password again"/>
+                      <h:message id="password2Message" for="password2" style="color: red" /><br/>
+                    </div>
+                    <h:commandButton value="Change Password"
+                                     type="submit"
+                                     action="#{authenticationManagedBean.updatePassword}"
+                                     class="btn btn-primary" style="min-width: 120px; font-size: 14px">
+                      <f:ajax execute="@form"
+                              render="navbar passwordForm"/>
+                    </h:commandButton>
+
+                    <h:messages id="success" infoClass="alert alert-success" errorClass="alert alert-danger" style="margin: 10px 0" showSummary="false" showDetail="true"/>
+                  </h:form>
+                </div>
               </div>
             </div>
-            <p:commandButton value="Change Password"
-                             action="#{authenticationManagedBean.updatePassword}"
-                             update="growl navbar"/>
-          </h:form>
-        </p:panel>
+          </div>
+
+        </div>
       </div>
     </div>
   </ui:define>
