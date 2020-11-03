@@ -5,7 +5,6 @@
                 template="./layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
   <ui:define name="title">
@@ -13,232 +12,286 @@
   </ui:define>
 
   <ui:define name="community">
-    <div class="p-grid p-justify-center">
-      <div class="p-col-7 p-md-10">
-        <h:form id="post-body">
-          <div class="post">
-            <div class="vote">
-              <c:choose>
-                <c:when test="#{postManagedBean.isUpvoted()}">
-                  <p:commandButton action="#{postManagedBean.removeVote()}"
-                                   update="post-body"
-                                   style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
-                                   icon="pi pi-chevron-up" title="Remove vote">
-                    <f:param name="pId" value="#{post.id}" />
-                  </p:commandButton>
-                </c:when>
-                <c:otherwise>
-                  <p:commandButton action="#{postManagedBean.upvote()}"
-                                   update="post-body"
-                                   style="margin: 0 5px; background-color: transparent; border: none"
-                                   icon="pi pi-chevron-up" title="Upvote">
-                    <f:param name="pId" value="#{post.id}" />
-                  </p:commandButton>
-                </c:otherwise>
-              </c:choose>
+    <div class="container" style="padding: 30px 0; max-width: 100%">
+      <div class="row justify-content-center">
+        <div class="col-10 col-md-7">
+          <h:form id="post-body">
+            <div class="post">
+              <div class="vote">
+                <h:commandLink action="#{postManagedBean.removeVote()}"
+                               rendered="#{postManagedBean.isUpvoted()}"
+                               style="margin: 5px 5px 0; background-color: transparent; border: none; color: rgb(255, 68, 1)"
+                               title="Remove vote">
+                  <i class="fas fa-chevron-up fa-lg" />
+                  <f:param name="pId" value="#{post.id}" />
+                  <f:ajax execute="@form" render="post-body"/>
+                </h:commandLink>
+                <h:commandLink action="#{postManagedBean.upvote()}"
+                               rendered="#{not postManagedBean.isUpvoted()}"
+                               style="margin: 5px 5px 0; background-color: transparent; border: none; color: #dedede"
+                               title="Upvote">
+                  <i class="fas fa-chevron-up fa-lg" />
+                  <f:param name="pId" value="#{post.id}" />
+                  <f:ajax execute="@form" render="post-body"/>
+                </h:commandLink>
 
-              <h:outputText value="#{postManagedBean.upvoters.size() - postManagedBean.downvoters.size()}" />
+                <h:outputText value="#{postManagedBean.upvoters.size() - postManagedBean.downvoters.size()}" />
 
-              <c:choose>
-                <c:when test="#{postManagedBean.isDownvoted()}">
-                  <p:commandButton action="#{postManagedBean.removeVote()}"
-                                   update="post-body"
-                                   style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
-                                   icon="pi pi-chevron-down" title="Remove vote">
-                    <f:param name="pId" value="#{postManagedBean.pId}" />
-                  </p:commandButton>
-                </c:when>
-                <c:otherwise>
-                  <p:commandButton action="#{postManagedBean.downvote()}"
-                                   update="post-body"
-                                   style="margin: 0 5px; background-color: transparent; border: none"
-                                   icon="pi pi-chevron-down" title="Downvote">
-                    <f:param name="pId" value="#{postManagedBean.pId}" />
-                  </p:commandButton>
-                </c:otherwise>
-              </c:choose>
-            </div>
-            <div class="post-body">
-              <div class="image">
-                <p:graphicImage id="post-image" class="inpost-image" value="#{imageBean.image}">
-                  <f:param name="pId" value="#{postManagedBean.pId}" />
-                </p:graphicImage>
+                <h:commandLink action="#{postManagedBean.removeVote()}"
+                               rendered="#{postManagedBean.isDownvoted()}"
+                               style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
+                               title="Remove vote">
+                  <i class="fas fa-chevron-down fa-lg" />
+                  <f:param name="pId" value="#{post.id}" />
+                  <f:ajax execute="@form" render="post-body"/>
+                </h:commandLink>
+                <h:commandLink action="#{postManagedBean.downvote()}"
+                               rendered="#{not postManagedBean.isDownvoted()}"
+                               style="margin: 0 5px; background-color: transparent; border: none; color: #dedede"
+                               title="Downvote">
+                  <i class="fas fa-chevron-down fa-lg" />
+                  <f:param name="pId" value="#{post.id}" />
+                  <f:ajax execute="@form" render="post-body"/>
+                </h:commandLink>
               </div>
-              <h2 style="margin: 10px 0 5px">#{postManagedBean.title}</h2>
-              <p class="preformatted">#{postManagedBean.body}</p>
-              <div style="align-self: flex-end; font-style: italic">
-                posted by
-                <p:link href="profile.xhtml" value="u/#{postManagedBean.author.displayName}">
-                  <f:param name="rId" value="#{postManagedBean.author.id}" />
-                </p:link>
-                #{utilityManagedBean.getTimeDifference(postManagedBean.timeCreated)} ago
-              </div>
-              <div style="display: flex; justify-content: flex-end; margin: 5px 0">
-                <p:linkButton outcome="/settings/editPost.xhtml"
-                              rendered="#{authenticationManagedBean.rId.equals(postManagedBean.author.id)}"
-                              style="margin-left: 8px;"
-                              icon="pi pi-pencil" title="Edit Post">
-                  <f:param name="pId" value="#{postManagedBean.pId}" />
-                  <f:param name="cName" value="#{param.cName}"/>
-                </p:linkButton>
-                <p:commandButton action="#{postManagedBean.deletePost}"
+              <div class="post-body">
+                <div class="image">
+                  <h:graphicImage id="post-image" class="inpost-image"
+                                  value="data:image/jpg;base64,#{postManagedBean.image}" rendered="#{postManagedBean.image != null}"/>
+                </div>
+                <h2 style="margin: 10px 0 5px">#{postManagedBean.title}</h2>
+                <p class="preformatted">#{postManagedBean.body}</p>
+                <div style="align-self: flex-end; font-style: italic">
+                  posted by
+                  <a href="profile.xhtml?rId=#{postManagedBean.author.id}" class="white-a">
+                    u/#{postManagedBean.author.displayName}
+                  </a>
+                  #{utilityManagedBean.getTimeDifference(postManagedBean.timeCreated)} ago
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin: 5px 0">
+                  <c:if test="#{authenticationManagedBean.rId.equals(postManagedBean.author.id)}">
+                    <h:outputLink value="/RedditClone-war/settings/editPost.xhtml"
+                                  role="button" class="btn btn-info"
+                                  style="margin-left: 8px;">
+                      <i class="fas fa-edit"></i>
+                      <f:param name="pId" value="#{postManagedBean.pId}" />
+                      <f:param name="cName" value="#{param.cName}"/>
+                    </h:outputLink>
+                  </c:if>
+                  <h:commandLink action="#{postManagedBean.deletePost}"
                                  rendered="#{authenticationManagedBean.rId.equals(postManagedBean.author.id)}"
                                  style="margin-left: 8px"
-                                 icon="fa fa-remove" title="Delete post"/>
+                                 class="btn btn-info"
+                                 title="Delete post">
+                    <i class="fas fa-trash-alt" />
+                  </h:commandLink>
+                </div>
               </div>
             </div>
-          </div>
-        </h:form>
-        <h:form id="comment-body">
-          <p:panel header="Comment" style="margin-bottom: 20px">
-            <div class="ui-fluid">
-              <div class="p-field">
-                <p:inputTextarea id="body"
+          </h:form>
+
+          <h:form id="comment-body">
+            <div class="card" style="border: none; margin-bottom: 20px ">
+              <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                <h6 style="margin: 0">
+                  Comment
+                </h6>
+              </div>
+              <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                <h:inputTextarea id="comment"
+                                 class="form-control"
                                  value="#{commentManagedBean.comment}"
-                                 rows="2"/>
+                                 rows="2"/><br/>
+                <h:commandButton value="Comment"
+                                 action="#{commentManagedBean.createComment}"
+                                 class="btn btn-info" style="width: 100%; font-size: 14px">
+                  <f:ajax execute="@form"
+                          render="comment-body"/>
+                </h:commandButton>
               </div>
             </div>
 
-            <p:commandButton value="Comment"
-                             action="#{commentManagedBean.createComment}"
-                             update="growl comment-body"
-                             style="width: 100%"/>
-          </p:panel>
 
-          <ui:repeat value="#{postManagedBean.comments}" var="comment" >
-            <div class="post" style="display: flex; flex-direction: column; padding: 10px">
-              <h4 style="margin-bottom: 5px">
-                <h:link outcome="profile.xhtml" value="u/#{comment.author.displayName}">
-                  <f:param name="rId" value="#{comment.author.id}" />
-                </h:link>
-                #{utilityManagedBean.getTimeDifference(comment.timeCreated)} ago
-              </h4>
-              <h:outputText value="#{comment.body}" />
+            <ui:repeat value="#{postManagedBean.comments}" var="comment" >
+              <div class="post" style="display: flex; flex-direction: column; padding: 10px">
+                <h7 style="margin-bottom: 5px">
+                  <h:link class="white-a" outcome="profile.xhtml" value="u/#{comment.author.displayName}">
+                    <f:param name="rId" value="#{comment.author.id}" />
+                  </h:link>
+                  #{utilityManagedBean.getTimeDifference(comment.timeCreated)} ago
+                </h7>
+                <h:outputText value="#{comment.body}" />
 
-              <div style="display: flex; justify-content: flex-end; margin-bottom: 10px">
-                <p:commandButton action="#{commentManagedBean.selectReply}"
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 10px">
+                  <h:commandLink action="#{commentManagedBean.selectReply}"
                                  rendered="#{authenticationManagedBean.rId gt 0}"
-                                 update="growl :comment-body"
-                                 style="margin-left: 8px;"
-                                 icon="fa fa-reply" title="Reply Comment">
-                  <f:param name="cId" value="#{comment.id}" />
-                </p:commandButton>
-                <p:commandButton action="#{commentManagedBean.selectComment}"
+                                 style="margin-left: 8px"
+                                 class="btn btn-info"
+                                 title="Reply Comment">
+                    <i class="fas fa-reply"/>
+                    <f:ajax execute="@form" render="comment-body"/>
+                    <f:param name="cId" value="#{comment.id}" />
+                  </h:commandLink>
+
+                  <h:commandLink action="#{commentManagedBean.selectComment}"
                                  rendered="#{authenticationManagedBean.rId.equals(comment.author.id)}"
-                                 update="growl :comment-body"
-                                 style="margin-left: 8px;"
-                                 icon="pi pi-pencil" title="Edit Comment">
-                  <f:param name="cId" value="#{comment.id}" />
-                </p:commandButton>
-                <p:commandButton action="#{commentManagedBean.deleteComment}"
+                                 style="margin-left: 8px"
+                                 class="btn btn-info"
+                                 title="Edit Comment">
+                    <i class="fas fa-pen"></i>
+                    <f:ajax execute="@form" render="comment-body"/>
+                    <f:param name="cId" value="#{comment.id}" />
+                  </h:commandLink>
+
+                  <h:commandLink action="#{commentManagedBean.deleteComment}"
                                  rendered="#{authenticationManagedBean.rId.equals(comment.author.id)}"
-                                 update="growl :comment-body" process="@this"
-                                 style="margin-left: 8px;"
-                                 icon="fa fa-remove" title="Delete Comment">
-                  <f:param name="cId" value="#{comment.id}" />
-                </p:commandButton>
+                                 style="margin-left: 8px"
+                                 class="btn btn-info"
+                                 title="Edit Comment">
+                    <i class="fas fa-trash-alt" />
+                    <f:ajax  execute="@form @this" render="comment-body"/>
+                    <f:param name="cId" value="#{comment.id}" />
+                  </h:commandLink>
+
+
+                </div>
+
+                <ui:fragment rendered="#{commentManagedBean.selectedCommentId.equals(comment.id)}">
+                  <div class="card" style="border: none; margin-bottom: 20px ">
+                    <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                      <h6 style="margin: 0">
+                        Edit Comment
+                      </h6>
+                    </div>
+                    <div class="card-body" style="background-color: rgb(50, 50, 50)">
+                      <h:inputTextarea id="edit-comment"
+                                       class="form-control"
+                                       value="#{commentManagedBean.editComment}"
+                                       rows="2"/><br/>
+                      <div style="display: flex; ">
+                        <h:commandButton value="Cancel"
+                                         action="#{commentManagedBean.unselectComment}"
+                                         class="btn btn-secondary"
+                                         style="flex-grow: 1; font-size: 14px">
+                          <f:ajax execute="@form"
+                                  render="comment-body"/>
+                        </h:commandButton>
+                        <h:commandButton value="Reply Comment"
+                                         action="#{commentManagedBean.updateComment}"
+                                         class="btn btn-info"
+                                         style="flex-grow: 2; font-size: 14px">
+                          <f:ajax execute="@form"
+                                  render="comment-body"/>
+                        </h:commandButton>
+                      </div>
+                    </div>
+                  </div>
+                </ui:fragment>
+
+                <ui:fragment rendered="#{commentManagedBean.selectedReplyId.equals(comment.id)}">
+                  <div class="card" style="border: none; margin-bottom: 20px ">
+                    <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                      <h6 style="margin: 0">
+                        Reply Comment
+                      </h6>
+                    </div>
+                    <div class="card-body" style="background-color: rgb(50, 50, 50)">
+                      <h:inputTextarea id="reply-comment"
+                                       class="form-control"
+                                       value="#{commentManagedBean.editComment}"
+                                       rows="2"/><br/>
+                      <div style="display: flex; ">
+                        <h:commandButton value="Cancel"
+                                         action="#{commentManagedBean.unselectComment}"
+                                         class="btn btn-secondary"
+                                         style="flex-grow: 1; font-size: 14px">
+                          <f:ajax execute="@form"
+                                  render="comment-body"/>
+                        </h:commandButton>
+                        <h:commandButton value="Reply Comment"
+                                         action="#{commentManagedBean.replyComment}"
+                                         class="btn btn-info"
+                                         style="flex-grow: 2; font-size: 14px">
+                          <f:ajax execute="@form"
+                                  render="comment-body"/>
+                        </h:commandButton>
+                      </div>
+                    </div>
+                  </div>
+                </ui:fragment>
+
+
+
+                <ui:repeat value="#{comment.children}" var="reply">
+                  <div class="reply-body">
+                    <div>
+                      <h7 style="margin-bottom: 5px">
+                        <h:link class='white-a' outcome="profile.xhtml" value="u/#{reply.author.displayName}">
+                          <f:param name="rId" value="#{reply.author.id}" />
+                        </h:link>
+                        #{utilityManagedBean.getTimeDifference(reply.timeCreated)} ago
+                      </h7><br/>
+                      <h:outputText value="#{reply.body}" />
+                    </div>
+                    <div style="align-self: center">
+                      <h:commandLink action="#{commentManagedBean.deleteReply}"
+                                     rendered="#{authenticationManagedBean.rId.equals(comment.author.id)}"
+                                     style="margin-left: 8px"
+                                     class="btn btn-info"
+                                     title="Delete Reply">
+                        <i class="fas fa-trash-alt" />
+                        <f:ajax  execute="@form @this" render="comment-body"/>
+                        <f:param name="parentCId" value="#{comment.id}"/>
+                        <f:param name="cId" value="#{reply.id}" />
+                      </h:commandLink>
+                    </div>
+                  </div>
+                </ui:repeat>
               </div>
-              <p:panel header="Edit Comment"
-                       style="margin-bottom: 20px"
-                       rendered="#{commentManagedBean.selectedCommentId.equals(comment.id)}">
-                <div class="ui-fluid">
-                  <div class="p-field">
-                    <p:inputTextarea id="edit-comment"
-                                     value="#{commentManagedBean.editComment}"
-                                     rows="2"/>
-                  </div>
+            </ui:repeat>
+          </h:form>
+        </div>
+
+        <div id="info" class="col-md-3 d-none d-lg-block">
+          <h:form id="info-panel">
+            <c:if test="#{not empty param.cName}">
+              <div class="card" style="border: none">
+                <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                  <h3 style="margin: 0">
+                    <a class="white-a" href="/RedditClone-war/r/#{param.cName}">
+                      r/#{param.cName}
+                    </a>
+                  </h3>
                 </div>
-                <div style="display: flex; ">
-                  <p:commandButton value="Cancel"
-                                   action="#{commentManagedBean.unselectComment}"
-                                   update="growl comment-body"
-                                   style="flex-grow: 1; background-color: rgb(88, 88, 88); border: none"/>
-
-                  <p:commandButton value="Edit Comment"
-                                   action="#{commentManagedBean.updateComment}"
-                                   update="growl comment-body"
-                                   style="flex-grow: 1; width: 50%"/>
+                <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                  <p>#{postManagedBean.community.description}</p>
                 </div>
-              </p:panel>
-              <p:panel header="Reply Comment"
-                       style="margin-bottom: 20px"
-                       rendered="#{commentManagedBean.selectedReplyId.equals(comment.id)}">
-                <div class="ui-fluid">
-                  <div class="p-field">
-                    <p:inputTextarea id="reply-comment"
-                                     value="#{commentManagedBean.editComment}"
-                                     rows="2"/>
-                  </div>
+                <div class="card-footer" style="background-color: rgb(25, 25, 25)">
+                  <h:outputText value="#{postManagedBean.community.members.size()} member(s)" />
                 </div>
-                <div style="display: flex; ">
-                  <p:commandButton value="Cancel"
-                                   action="#{commentManagedBean.unselectComment}"
-                                   update="growl comment-body"
-                                   style="flex-grow: 1; background-color: rgb(88, 88, 88); border: none"/>
+              </div>
+            </c:if>
 
-                  <p:commandButton value="Reply Comment"
-                                   action="#{commentManagedBean.replyComment}"
-                                   update="growl comment-body"
-                                   style="flex-grow: 1; width: 50%"/>
+
+            <c:if test="#{empty param.cName}">
+              <div class="card" style="border: none">
+                <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                  <h5 style="margin: 0">
+                    u/#{postManagedBean.author.displayName}'s Userboard
+                  </h5>
                 </div>
-              </p:panel>
-
-
-
-              <ui:repeat value="#{comment.children}" var="reply">
-                <div class="reply-body">
-                  <div>
-                    <h4 style="margin-bottom: 5px">
-                      <h:link outcome="profile.xhtml" value="u/#{reply.author.displayName}">
-                        <f:param name="rId" value="#{reply.author.id}" />
-                      </h:link>
-                      #{utilityManagedBean.getTimeDifference(reply.timeCreated)} ago
-                    </h4>
-                    <h:outputText value="#{reply.body}" />
-                  </div>
-                  <div style="align-self: center">
-                    <p:commandButton action="#{commentManagedBean.deleteReply}"
-                                     rendered="#{authenticationManagedBean.rId.equals(reply.author.id)}"
-                                     update="growl :comment-body" process="@this"
-                                     style="margin-left: 8px;"
-                                     icon="fa fa-remove" title="Delete Comment">
-                      <f:param name="parentCId" value="#{comment.id}"/>
-                      <f:param name="cId" value="#{reply.id}" />
-                    </p:commandButton>
-                  </div>
+                <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                  <h6>About:</h6>
+                  <p>#{postManagedBean.author.about}</p>
                 </div>
-              </ui:repeat>
-            </div>
-          </ui:repeat>
-        </h:form>
-      </div>
-      <div id="info" class="p-col-3 p-d-md-none">
-        <h:form id="info-panel">
-          <p:panel style="margin-bottom:20px" rendered="#{not empty param.cName}">
-            <f:facet name="header">
-              <p:link href="/RedditClone-war/r/#{param.cName}">
-                <h2 style="margin: 0">r/#{param.cName}</h2>
-              </p:link>
-            </f:facet>
+                <div class="card-footer" style="background-color: rgb(25, 25, 25)">
+                  <b>Date joined:</b> #{utilityManagedBean.formatDate(postManagedBean.author.dateJoined)}
+                </div>
+              </div>
+            </c:if>
+          </h:form>
+        </div>
 
-            <h:panelGrid>
-              Description:<br />
-              #{postManagedBean.community.description}
-            </h:panelGrid>
-
-            <f:facet name="footer">
-              <h:outputText value="#{postManagedBean.community.members.size()} members" />
-            </f:facet>
-          </p:panel>
-          <p:panel style="margin-bottom:20px" rendered="#{empty param.cName}">
-            <f:facet name="header">
-              <h2 style="margin: 0">u/#{postManagedBean.author.displayName}'s Userboard</h2>
-            </f:facet>
-            <h3>About:</h3>
-            #{postManagedBean.author.about} <br/><br/>
-            <b>Date joined:</b> #{utilityManagedBean.formatDate(postManagedBean.author.dateJoined)}
-          </p:panel>
-        </h:form>
       </div>
     </div>
   </ui:define>

@@ -42,6 +42,7 @@ public class PostManagedBean implements Serializable {
   private String title;
   private String body;
   private String cName;
+  private String image;
 
   private List<Redditor> upvoters;
   private List<Redditor> downvoters;
@@ -92,6 +93,7 @@ public class PostManagedBean implements Serializable {
       this.community = p.getCommunity();
       this.author = p.getAuthor();
       this.timeCreated = p.getTimeCreated();
+      this.image = p.getImage();
 
     } catch (Exception e) {
       // do nothing
@@ -110,6 +112,7 @@ public class PostManagedBean implements Serializable {
       this.community = p.getCommunity();
       this.author = p.getAuthor();
       this.timeCreated = p.getTimeCreated();
+      this.image = p.getImage();
 
     } catch (Exception e) {
       // do nothing
@@ -402,6 +405,10 @@ public class PostManagedBean implements Serializable {
 
   public void setUploadedFile(UploadedFile uploadedFile) {
     this.uploadedFile = uploadedFile;
+  }
+
+  public String getImage() {
+    return image;
   }
 
 }
