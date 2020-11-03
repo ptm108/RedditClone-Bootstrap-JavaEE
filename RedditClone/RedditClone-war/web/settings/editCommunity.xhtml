@@ -4,7 +4,8 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./../layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
   <ui:param name="cName" value="r/#{communityManagedBean.cName}" />
 
@@ -17,32 +18,45 @@
   </ui:define>
 
   <ui:define name="content">
-    <div class="p-grid">
-      <div class="p-col-6 p-offset-3">
-        <h:form>
-          <p:panel id="register" header="Edit r/#{communityManagedBean.cName}">
-            <div class="ui-fluid">
-              <div class="p-field">
-                <p:outputLabel for="title" value="Title: " />
-                <p:inputText id="title"
-                             value="#{communityManagedBean.title}"
-                             required="true"/>
-                <small id="name-help">This title will be displayed on the community page.</small>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-8">
+          <h:form id='settingsForm'>
+            <div class="card" style="border: none">
+              <div class="card-header" id="userSettings" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                <h3>Edit r/#{communityManagedBean.cName}</h3>
               </div>
-              <div class="p-field">
-                <p:outputLabel for="description" value="Description " />
-                <p:inputTextarea id="description"
-                                 value="#{communityManagedBean.description}"
-                                 rows="4"/>
-                <small id="description-help">This is how new members come to understand your community.</small>
+              <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                <div class='form-group'>
+                  <h:outputLabel for="title" value="Title:" style="font-size: 14px"/>
+                  <h:inputText id="title"
+                               class="form-control"
+                               value="#{communityManagedBean.title}"
+                               required="true"
+                               requiredMessage="Title is required"/>
+                  <small id="name-help">This title will be displayed on the community page.</small><br/>
+                  <h:message id="titleMessage" for="title" style="color: red" /><br/>
+
+                  <h:outputLabel for="description" value="Description: " style="font-size: 14px; margin-top: 20px"/>
+                  <h:inputTextarea id="description"
+                                   class="form-control"
+                                   value="#{communityManagedBean.description}"
+                                   rows="4"/>
+                  <small id="description-help">This is how new members come to understand your community.</small>
+                  <h:message id="descriptionMessage" for="description" style="color: red" /><br/>
+                </div>
+
+                <h:commandButton value="Save Changes"
+                                 type="submit"
+                                 action="#{communityManagedBean.updateCommunity}"
+                                 class="btn btn-primary" style="min-width: 120px; font-size: 14px">
+                  <f:ajax execute="@form"
+                          render="settingsForm"/>
+                </h:commandButton>
               </div>
             </div>
-
-            <p:commandButton value="Edit Community"
-                             action="#{communityManagedBean.updateCommunity}"
-                             update="growl"/>
-          </p:panel>
-        </h:form>
+          </h:form>
+        </div>
       </div>
     </div>
   </ui:define>

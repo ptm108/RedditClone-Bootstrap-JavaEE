@@ -6,7 +6,8 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
   <ui:param name="cName" value="r/#{requestScope.cName}" />
 
@@ -33,128 +34,141 @@
       <c:otherwise>
         <h:form id="header">
           <div id="image" style="background-color: rgb(31,126,208); height: 80px; margin-top: -12px;" />
-          <div class="p-grid p-justify-center" style="background-color: rgb(6,6,6); height: 80px; margin-bottom: 12px;">
-            <div class="p-col-10" style="display: flex; justify-content: space-between">
-              <div>
-                <h1 style="margin: 5px 0; font-size: 25px"><h:outputText value="#{communityManagedBean.title}"/></h1>
-                <h4 style="margin: 5px 0"><h:outputText value="r/#{communityManagedBean.cName}"/></h4>
-              </div>
-              <div style="align-self: center">
-                <p:linkButton value="Create Post"
-                              href="/RedditClone-war/settings/createPost.xhtml"
-                              style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px;">
-                  <f:param name="cName" value="#{communityManagedBean.cName}"/>
-                </p:linkButton>
-                <c:choose>
-                  <c:when test="#{communityManagedBean.joined}">
-                    <p:commandButton value="Leave"
-                                     action="#{communityManagedBean.leaveCommunity}"
-                                     update=":header :info-panel"
-                                     style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; max-height: 32px; min-width: 120px;"/>
-                  </c:when>
-                  <c:otherwise>
-                    <p:commandButton value="Join"
-                                     action="#{communityManagedBean.joinCommunity}"
-                                     update=":header :info-panel"
-                                     style="margin: 0 5px; max-height: 32px; min-width: 120px;"/>
-                  </c:otherwise>
-                </c:choose>
+          <div class="container" style="background-color: rgb(26,26,26); height: 80px; margin: 0 0 12px; max-width: 100%">
+            <div class="row justify-content-center">
+              <div class="col-10" style="display: flex; justify-content: space-between">
+                <div>
+                  <h1 style="margin: 5px 0; font-size: 25px"><h:outputText value="#{communityManagedBean.title}"/></h1>
+                  <h4 style="margin: 5px 0"><h:outputText value="r/#{communityManagedBean.cName}"/></h4>
+                </div>
+                <div style="align-self: center">
+                  <a href="/RedditClone-war/settings/createPost.xhtml?cName=#{communityManagedBean.cName}"
+                     role="button" class="btn btn-outline-light"
+                     style="min-width: 120px; margin-right: 10px">
+                    Create Post
+                  </a>
+                  <c:choose>
+                    <c:when test="#{communityManagedBean.joined}">
+                      <h:commandButton value="Leave"
+                                       action="#{communityManagedBean.leaveCommunity}"
+                                       class="btn btn-secondary"
+                                       style="min-width: 120px">
+                        <f:ajax execute="@form" render=":header :info-panel"/>
+                      </h:commandButton>
+                    </c:when>
+                    <c:otherwise>
+                      <h:commandButton value="Join"
+                                       action="#{communityManagedBean.joinCommunity}"
+                                       class="btn btn-primary"
+                                       style="min-width: 120px">
+                        <f:ajax execute="@form" render=":header :info-panel"/>
+                      </h:commandButton>
+                    </c:otherwise>
+                  </c:choose>
+                </div>
               </div>
             </div>
           </div>
         </h:form>
-        <div class="p-grid p-justify-center">
-          <div class="p-col-7 p-md-10">
-            <h:form id="post-body">
-              <div class="post" style="align-items: center; padding: 5px;">
-                <p:inputText placeholder="Search Posts" style="flex-grow: 5; margin-right: 10px" value="#{communityManagedBean.searchTerm}" autocomplete="off"/>
-                <p:commandButton action="#{communityManagedBean.searchPosts}" value="Search" style="flex-grow: 1" update="post-body"/>
-              </div>
-              <ui:repeat value="#{communityManagedBean.posts}" var="post">
-                <div class="post">
-                  <div class="vote">
-                    <p:commandButton action="#{communityManagedBean.removeVote()}"
-                                     update="growl post-body"
+        <div class="container" style="margin: 0; max-width: 100%">
+          <div class="row justify-content-center">
+            <div class="col-10 col-md-7">
+              <h:form id="post-body">
+                <div class="post" style="align-items: center; padding: 5px;">
+                  <h:inputText class="form-control" a:placeholder="Search Posts" style="flex-grow: 2; margin-right: 10px" value="#{communityManagedBean.searchTerm}" autocomplete="off"/>
+                  <h:commandButton action="#{communityManagedBean.searchPosts}"
+                                   value="Search" style="flex-grow: 1; min-width: 120px"
+                                   class="btn btn-outline-light">
+                    <f:ajax execute="@form" render="post-body"/>
+                  </h:commandButton>
+                </div>
+                <ui:repeat value="#{communityManagedBean.posts}" var="post">
+                  <div class="post">
+                    <div class="vote">
+                      <h:commandLink action="#{communityManagedBean.removeVote()}"
                                      rendered="#{communityManagedBean.isUpvoted(post.id)}"
-                                     style="margin: 0 5px; background-color: transparent; border: none; color: rgb(255, 68, 1)"
-                                     icon="pi pi-chevron-up" title="Remove vote">
-                      <f:param name="pId" value="#{post.id}" />
-                    </p:commandButton>
-                    <p:commandButton action="#{communityManagedBean.upvote()}"
-                                     update="growl post-body"
+                                     style="margin: 5px 5px 0; background-color: transparent; border: none; color: rgb(255, 68, 1)"
+                                     title="Remove vote">
+                        <i class="fas fa-chevron-up fa-lg" />
+                        <f:param name="pId" value="#{post.id}" />
+                        <f:ajax execute="@form" render="post-body"/>
+                      </h:commandLink>
+                      <h:commandLink action="#{communityManagedBean.upvote()}"
                                      rendered="#{not communityManagedBean.isUpvoted(post.id)}"
-                                     style="margin: 0 5px; background-color: transparent; border: none"
-                                     icon="pi pi-chevron-up" title="Upvote">
-                      <f:param name="pId" value="#{post.id}" />
-                    </p:commandButton>
+                                     style="margin: 5px 5px 0; background-color: transparent; border: none; color: #dedede"
+                                     title="Upvote">
+                        <i class="fas fa-chevron-up fa-lg" />
+                        <f:param name="pId" value="#{post.id}" />
+                        <f:ajax execute="@form" render="post-body"/>
+                      </h:commandLink>
 
-                    <h:outputText value="#{post.upvoters.size() - post.downvoters.size()}" />
+                      <h:outputText value="#{post.upvoters.size() - post.downvoters.size()}" />
 
-                    <p:commandButton action="#{communityManagedBean.removeVote()}"
-                                     update="growl post-body"
+                      <h:commandLink action="#{communityManagedBean.removeVote()}"
                                      rendered="#{communityManagedBean.isDownvoted(post.id)}"
                                      style="margin: 0 5px; background-color: transparent; border: none; color: rgb(112, 147, 255)"
-                                     icon="pi pi-chevron-down" title="Remove vote">
-                      <f:param name="pId" value="#{post.id}" />
-                    </p:commandButton>
-                    <p:commandButton action="#{communityManagedBean.downvote()}"
-                                     update="growl post-body"
+                                     title="Remove vote">
+                        <i class="fas fa-chevron-down fa-lg" />
+                        <f:param name="pId" value="#{post.id}" />
+                        <f:ajax execute="@form" render="post-body"/>
+                      </h:commandLink>
+                      <h:commandLink action="#{communityManagedBean.downvote()}"
                                      rendered="#{not communityManagedBean.isDownvoted(post.id)}"
-                                     style="margin: 0 5px; background-color: transparent; border: none"
-                                     icon="pi pi-chevron-down" title="Downvote">
-                      <f:param name="pId" value="#{post.id}" />
-                    </p:commandButton>
+                                     style="margin: 0 5px; background-color: transparent; border: none; color: #dedede"
+                                     title="Downvote">
+                        <i class="fas fa-chevron-down fa-lg" />
+                        <f:param name="pId" value="#{post.id}" />
+                        <f:ajax execute="@form" render="post-body"/>
+                      </h:commandLink>
+                    </div>
+                    <div class="image">
+                      <h:graphicImage id="post-image" class="post-image"
+                                      value="data:image/jpg;base64,#{post.image}" rendered="#{post.image != null}"/>
+                    </div>
+                    <div class="post-body">
+                      <p style="margin: 0">
+                        <span style="font-size: 10px; color: #b0b0b0">Posted by <a class="white-a" href="/RedditClone-war/profile.xhtml?rId=#{post.author.id}" >u/#{post.author.displayName}</a> #{utilityManagedBean.getTimeDifference(post.timeCreated)} ago</span>
+                      </p>
+                      <h3 style="margin: 5px 0">
+                        <h:link class="white-a" value="#{post.title}" outcome="/postPage.xhtml">
+                          <f:param name="cName" value="#{post.community.name}"/>
+                          <f:param name="pId" value="#{post.id}"/>
+                        </h:link>
+                      </h3>
+                      <p>
+                        #{post.body.length() > 255 ? post.body.substring(0, 255).concat("...") : post.body}
+                      </p>
+                      <h6 style="align-self: flex-end">#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
+                    </div>
                   </div>
-                  <div class="image">
-                    <p:graphicImage id="post-image" class="post-image" value="#{imageBean.image}">
-                      <f:param name="pId" value="#{post.id}" />
-                    </p:graphicImage>
+                </ui:repeat>
+              </h:form>
+            </div>
+            <div id="info" class="col-md-3 d-none d-lg-block">
+              <h:form id="info-panel">
+                <div class="card" style="border: none">
+                  <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                    <h3 style="margin: 0">
+                      <a class="white-a" href="/RedditClone-war/r/#{communityManagedBean.cName}">
+                        r/#{communityManagedBean.cName}
+                      </a>
+                    </h3>
                   </div>
-                  <div class="post-body">
-                    <p:link value=" • Posted by u/#{post.author.displayName}" outcome="/profile.xhtml"
-                            style="font-size: 10px; color: #b0b0b0">
-                      <f:param name="rId" value="#{post.author.id}" />
-                    </p:link>
-                    <h2 style="margin: 5px 0">
-                      <h:link value="#{post.title}" outcome="/postPage.xhtml" >
-                        <f:param name="cName" value="#{communityManagedBean.cName}" />
-                        <f:param name="pId" value="#{post.id}"/>
-                      </h:link>
-                    </h2>
-                    <p>
-                      #{post.body.length() > 255 ? post.body.substring(0, 255).concat("...") : post.body}
-                    </p>
-                    <h6 style="align-self: flex-end">#{utilityManagedBean.getCommentCount(post.comments)} comments</h6>
+                  <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                    <p>#{communityManagedBean.description}</p>
+                    <a href="/RedditClone-war/settings/editCommunity.xhtml?cName=#{communityManagedBean.cName}"
+                       role="button" class="btn btn-info"
+                       rendered="#{authenticationManagedBean.rId gt 0 and communityManagedBean.isModerator()}"
+                       style="width: 100%; margin-right: 10px; font-size: 12px">
+                      Edit Community
+                    </a>
+                  </div>
+                  <div class="card-footer" style="background-color: rgb(25, 25, 25)">
+                    <h:outputText value="#{communityManagedBean.members.size()} member(s)" />
                   </div>
                 </div>
-              </ui:repeat>
-            </h:form>
-          </div>
-          <div id="info" class="p-col-3 p-d-md-none">
-            <h:form id="info-panel">
-              <p:panel style="margin-bottom:20px">
-                <f:facet name="header">
-                  <p:link href="/RedditClone-war/r/#{communityManagedBean.cName}">
-                    <h2 style="margin: 0">r/#{communityManagedBean.cName}</h2>
-                  </p:link>
-                </f:facet>
-
-                <h:panelGrid>
-                  Description:<br />
-                  #{communityManagedBean.description}
-                </h:panelGrid>
-                <p:linkButton value="Edit Community"
-                              href="/RedditClone-war/settings/editCommunity.xhtml"
-                              rendered="#{authenticationManagedBean.rId gt 0 and communityManagedBean.isModerator()}"
-                              style="width: 100%; margin: 10px 0;">
-                  <f:param name="cName" value="#{communityManagedBean.cName}"/>
-                </p:linkButton>
-
-                <f:facet name="footer">
-                  <h:outputText value="#{communityManagedBean.members.size()} members" />
-                </f:facet>
-              </p:panel>
-            </h:form>
+              </h:form>
+            </div>
           </div>
         </div>
       </c:otherwise>
