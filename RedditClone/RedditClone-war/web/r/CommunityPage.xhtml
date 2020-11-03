@@ -5,7 +5,6 @@
                 template="../layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
@@ -16,17 +15,22 @@
   <ui:define name="community">
     <c:choose>
       <c:when test="#{communityManagedBean.cId lt 0}">
-        <div class="p-grid">
-          <div class="p-col-8" style="text-align: center; margin: 80px auto; max-width: 500px">
-            <h1>There aren't any communities with that name</h1><br/>
-            <h3>This community may have been banned or the community name is incorrect.</h3>
+        <div class="container">
+          <div style="text-align: center; margin: 80px auto; max-width: 500px">
+            <h2>There aren't any communities with that name</h2><br/>
+            <h6>This community may have been banned or the community name is incorrect.</h6>
             <div style="display: flex; margin: 40px 0 0;">
-              <p:linkButton href="/RedditClone-war/settings/NewCommunity.xhtml" value="Create New Community"
-                            style="background-color: transparent; border: 1px solid #dedede; margin: 0 5px; flex-grow: 4">
-                <f:param name="cName" value="#{requestScope.cName}" />
-              </p:linkButton>
-              <p:linkButton href="/RedditClone-war/" value="Go Home"
-                            style="margin: 0 5px; flex-grow: 1"/>
+
+              <a href="/RedditClone-war/settings/NewCommunity.xhtml?cName=#{requestScope.cName}"
+                 role="button" class="btn btn-primary"
+                 style="margin: 0 5px; flex-grow: 4">
+                Create a new Community
+              </a>
+              <a href="/RedditClone-war/"
+                 role="button" class="btn btn-outline-secondary"
+                 style="margin: 0 5px; flex-grow: 1">
+                Go home
+              </a>
             </div>
           </div>
         </div>
@@ -34,12 +38,12 @@
       <c:otherwise>
         <h:form id="header">
           <div id="image" style="background-color: rgb(31,126,208); height: 80px; margin-top: -12px;" />
-          <div class="container" style="background-color: rgb(26,26,26); height: 80px; margin: 0 0 12px; max-width: 100%">
-            <div class="row justify-content-center">
+          <div class="container" style="background-color: rgb(26,26,26); padding: 12px 0; max-width: 100%;">
+            <div class="row justify-content-center align-items-center">
               <div class="col-10" style="display: flex; justify-content: space-between">
-                <div>
+                <div style="align-self: center">
                   <h1 style="margin: 5px 0; font-size: 25px"><h:outputText value="#{communityManagedBean.title}"/></h1>
-                  <h4 style="margin: 5px 0"><h:outputText value="r/#{communityManagedBean.cName}"/></h4>
+                  <h6 style="margin: 5px 0"><h:outputText value="r/#{communityManagedBean.cName}"/></h6>
                 </div>
                 <div style="align-self: center">
                   <a href="/RedditClone-war/settings/createPost.xhtml?cName=#{communityManagedBean.cName}"
