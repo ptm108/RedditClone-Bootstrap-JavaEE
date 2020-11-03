@@ -56,7 +56,10 @@ public class AuthenticationManagedBean implements Serializable {
     context.getExternalContext().getFlash().setKeepMessages(true);
 
     if (!password.equals(password2)) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Passwords do not match"));
+      context.addMessage(null, new FacesMessage("Passwords do not match"));
+      username = null;
+      password = null;
+      password2 = null;
       return null;
     }
 
@@ -71,14 +74,14 @@ public class AuthenticationManagedBean implements Serializable {
 
     try {
       redditSessionLocal.createRedditor(r);
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Welcome to reddit, " + username));
+      context.addMessage("loginForm:success", new FacesMessage("Welcome to reddit, " + username));
 
       username = null;
       password = null;
       password2 = null;
       return "/login.xhtml?faces-redirect=true";
     } catch (Exception e) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+      context.addMessage("registerForm:validation", new FacesMessage("Something went wrong"));
 
       username = null;
       password = null;
@@ -112,7 +115,7 @@ public class AuthenticationManagedBean implements Serializable {
 
     } catch (Exception e) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-      return "/login.xhtml?faces-redirect=true";
+      return "/login.xhtml";
     }
 
   } //end login
@@ -127,7 +130,7 @@ public class AuthenticationManagedBean implements Serializable {
     username = null;
     password = null;
 
-    return "/login.xhtml?faces-redirect=true";
+    return "/home.xhtml";
   } //end logout
 
   public void updateProfile() {

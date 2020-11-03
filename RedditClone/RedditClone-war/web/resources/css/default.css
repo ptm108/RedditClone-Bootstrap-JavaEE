@@ -126,3 +126,10 @@ body .ui-datascroller .ui-datascroller-content {
   white-space: pre-wrap;
 }
 
+.login-image {
+  background-image: url("#{resource['images/reddit.png']}");
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
