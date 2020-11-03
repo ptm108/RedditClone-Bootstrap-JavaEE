@@ -19,18 +19,20 @@
             <c:if test="#{authenticationManagedBean.rId gt 0}">
               <a href="/RedditClone-war/settings/createPost.xhtml" role="button" class="btn btn-primary">Create Post</a>
             </c:if>
-            <h:commandButton value="Search Posts"
-                             action="#{homeManagedBean.toggleSearchPost}"
-                             class="btn btn-secondary"
-                             style="margin-left: 5px">
-              <f:ajax execute="@form" render="post-body"/>
-            </h:commandButton>
-            <h:commandButton value="Search Communities"
-                             action="#{homeManagedBean.toggleSearchCommunity}"
-                             class="btn btn-secondary"
-                             style="margin-left: 5px">
-              <f:ajax execute="@form" render="post-body"/>
-            </h:commandButton>
+            <h:form style="margin: 0">
+              <h:commandButton value="Search Posts"
+                               action="#{homeManagedBean.toggleSearchPost}"
+                               class="btn btn-secondary"
+                               style="margin-left: 5px">
+                <f:ajax execute="@form" render="post-body"/>
+              </h:commandButton>
+              <h:commandButton value="Search Communities"
+                               action="#{homeManagedBean.toggleSearchCommunity}"
+                               class="btn btn-secondary"
+                               style="margin-left: 5px">
+                <f:ajax execute="@form" render="post-body"/>
+              </h:commandButton>
+            </h:form>
           </div>
         </div>
         <div class="col-12">

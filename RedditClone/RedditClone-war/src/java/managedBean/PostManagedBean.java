@@ -26,8 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.file.UploadedFile;
+import javax.servlet.http.Part;
 import session.RedditSessionLocal;
 
 /**
@@ -54,7 +53,7 @@ public class PostManagedBean implements Serializable {
 
   private Date timeCreated;
 
-  private UploadedFile uploadedFile;
+  private Part uploadedFile;
 
   @EJB
   private RedditSessionLocal redditSessionLocal;
@@ -312,13 +311,6 @@ public class PostManagedBean implements Serializable {
     return false;
   }
 
-  public void fileUploadListener(FileUploadEvent event) {
-    FacesContext context = FacesContext.getCurrentInstance();
-    this.uploadedFile = event.getFile();
-
-    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Image uploaded"));
-  }
-
   public String getTitle() {
     return title;
   }
@@ -399,11 +391,11 @@ public class PostManagedBean implements Serializable {
     this.timeCreated = timeCreated;
   }
 
-  public UploadedFile getUploadedFile() {
+  public Part getUploadedFile() {
     return uploadedFile;
   }
 
-  public void setUploadedFile(UploadedFile uploadedFile) {
+  public void setUploadedFile(Part uploadedFile) {
     this.uploadedFile = uploadedFile;
   }
 

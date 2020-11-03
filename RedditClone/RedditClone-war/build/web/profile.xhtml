@@ -20,20 +20,20 @@
           <div style="display: flex; align-items: center; margin-bottom: 10px">
             <h2 style="margin: 10px 0">Posts:</h2>
             <div style="display: flex; justify-content: flex-end; flex-grow: 1">
-              <c:if test="#{authenticationManagedBean.rId eq userManagedBean.rId}">
-                <a href="/RedditClone-war/settings/createPost.xhtml"
-                   role="button" class="btn btn-outline-light"
-                   style="min-width: 120px; font-size: 14px">
-                  Create Post
-                </a>
-              </c:if>
-              <h:commandButton value="Search Posts"
-                               action="#{userManagedBean.toggleSearch}"
-                               class="btn btn-secondary"
-                               style="margin-left: 5px; font-size: 14px">
-                <f:ajax execute="@form" render="post-body"/>
-              </h:commandButton>
-              <h:form style="margin: 0">
+              <h:form style="display: flex; margin: 0">
+                <c:if test="#{authenticationManagedBean.rId eq userManagedBean.rId}">
+                  <a href="/RedditClone-war/settings/createPost.xhtml"
+                     role="button" class="btn btn-outline-light"
+                     style="min-width: 120px; font-size: 14px">
+                    Create Post
+                  </a>
+                </c:if>
+                <h:commandButton value="Search Posts"
+                                 action="#{userManagedBean.toggleSearch}"
+                                 class="btn btn-secondary"
+                                 style="margin-left: 5px; font-size: 14px">
+                  <f:ajax execute="@form" render="post-body"/>
+                </h:commandButton>
                 <h:selectOneMenu id="sort"
                                  value="#{userManagedBean.sort}"
                                  styleClass="customDropdown">

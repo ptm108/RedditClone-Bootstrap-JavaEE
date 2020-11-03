@@ -56,7 +56,7 @@ public class AuthenticationManagedBean implements Serializable {
     context.getExternalContext().getFlash().setKeepMessages(true);
 
     if (!password.equals(password2)) {
-      context.addMessage(null, new FacesMessage("Passwords do not match"));
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Passwords do not match"));
       username = null;
       password = null;
       password2 = null;
@@ -81,7 +81,7 @@ public class AuthenticationManagedBean implements Serializable {
       password2 = null;
       return "/login.xhtml?faces-redirect=true";
     } catch (Exception e) {
-      context.addMessage("registerForm:validation", new FacesMessage("Something went wrong"));
+      context.addMessage("registerForm:validation", new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Something went wrong"));
 
       username = null;
       password = null;

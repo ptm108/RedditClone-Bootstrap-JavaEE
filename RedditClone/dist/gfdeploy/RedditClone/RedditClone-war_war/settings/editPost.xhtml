@@ -4,8 +4,8 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./../layout.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
   <ui:param name="cName" value="r/#{param.cName}" />
 
@@ -18,42 +18,63 @@
   </ui:define>
 
   <ui:define name="content">
-    <div class="p-grid">
-      <div class="p-col-6 p-offset-3">
-        <h:form>
-          <p:panel id="register" header="Edit Post">
-            <div class="ui-fluid">
-              <div class="p-field">
-                <p:outputLabel for="title" value="Title " />
-                <p:inputTextarea id="title"
-                                 rows="1"
-                                 counter="display"
-                                 maxlength="300"
-                                 counterTemplate="{0} characters remaining"
-                                 value="#{postManagedBean.title}"/>
-                <h:outputText id="display" />
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-8">
+
+          <h:form id="edit-post" enctype="multipart/form-data">
+
+            <div class="card" style="border: none">
+              <div class="card-header" style="padding: 15px; background-color: rgb(21, 21, 21)">
+                <h3 style="margin: 0">Edit a Post</h3>
               </div>
-              <div class="p-field">
-                <p:outputLabel for="body" value="Body: " />
-                <p:inputTextarea id="body"
-                                 value="#{postManagedBean.body}"
-                                 rows="4"/>
+              <div class="card-body" style="background-color: rgb(25, 25, 25)">
+                <div class='form-group'>
+                  <h:outputLabel for="title" value="Title " style="font-size: 14px"/>
+                  <h:inputTextarea id="title"
+                                   class="form-control"
+                                   rows="1"
+                                   a:maxlength="300"
+                                   value="#{postManagedBean.title}"
+                                   required="true"
+                                   requiredMessage="Enter your post title.">
+                    <f:ajax event="keydown" render="charactersRemaining"/>
+                    <f:ajax event="keyup" render="charactersRemaining"/>
+                  </h:inputTextarea>
+                  <h:outputText id="charactersRemaining" value="#{300 - postManagedBean.title.length()} characters remaining"/><br/>
+                  <h:message id="titleMessage" for="title" style="color: red" /><br/>
+
+                  <h:outputLabel for="body" value="Body: " style="font-size: 14px; margin-top: 10px"/>
+                  <h:inputTextarea id="body"
+                                   class="form-control"
+                                   value="#{postManagedBean.body}"
+                                   rows="4"
+                                   required="true"
+                                   requiredMessage="Enter your post body."/>
+                  <h:message id="bodyMessage" for="body" style="color: red" /><br/>
+                </div>
+
+                <h:commandButton value="Submit Post"
+                                 type="submit"
+                                 action="#{postManagedBean.editPost}"
+                                 class="btn btn-primary" style="min-width: 120px; font-size: 14px; margin-top: 10px">
+                  <f:ajax execute="@form" render="edit-post"/>
+                  <f:param name="cName" value="#{param.cName}" />
+                </h:commandButton>
               </div>
             </div>
+          </h:form>
 
-            <f:facet name="footer">
-              <div style="display: flex; justify-content: center">
-                <p:commandButton value="Edit Post"
-                                 action="#{postManagedBean.editPost}"
-                                 update="growl">
-                  <f:param name="cName" value="#{param.cName}" />
-                </p:commandButton>
-              </div>
-            </f:facet>
-          </p:panel>
-        </h:form>
+        </div>
       </div>
     </div>
+
+    <script>
+      function updateCount() {
+        var count = parseInt($("[id$='textarea']").attr('maxlength')) - parseInt($("[id$='textarea']").val().length);
+        $("[id$='counter']").html(count + "characters remaining");
+      }
+    </script>
   </ui:define>
 
 </ui:composition>
