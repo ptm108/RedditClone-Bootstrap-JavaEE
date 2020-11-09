@@ -1,6 +1,12 @@
 Name: Phang Tze Ming
 Matric No.: A0184247Y
 
+Enhancements from Assignment 1:
+- Used Bootstrap UI library and FontAwesome Icons
+- Redesigned login and register pages, closer to Reddit's design
+- Custom css colours to match Reddit's dark mode
+
+
 Feature Enhancement/Additional Features:
 
 Users: 

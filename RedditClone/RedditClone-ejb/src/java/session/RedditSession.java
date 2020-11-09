@@ -154,7 +154,7 @@ public class RedditSession implements RedditSessionLocal {
   public List<Post> getUserPosts(Long rId, String searchTerm) {
     Query q;
     q = em.createQuery("SELECT p FROM Post p WHERE (p.author.id = :id) "
-            + "AND (LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search)");
+            + "AND (LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search) ORDER BY p.timeCreated DESC");
     q.setParameter("id", rId);
     q.setParameter("search", "%" + searchTerm.toLowerCase() + "%");
     return q.getResultList();
@@ -164,7 +164,7 @@ public class RedditSession implements RedditSessionLocal {
   public List<Post> getCommunityPosts(Long cId, String searchTerm) {
     Query q;
     q = em.createQuery("SELECT p FROM Post p WHERE (p.community.id = :id) "
-            + "AND (LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search)");
+            + "AND (LOWER(p.title) LIKE :search OR LOWER(p.body) LIKE :search) ORDER BY p.timeCreated DESC");
     q.setParameter("id", cId);
     q.setParameter("search", "%" + searchTerm.toLowerCase() + "%");
     return q.getResultList();

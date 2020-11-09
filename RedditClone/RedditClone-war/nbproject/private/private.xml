@@ -5,18 +5,20 @@
             <url>web/resources/css/default.css</url>
             <bookmark id="1">
                 <name/>
-                <line>5</line>
+                <line>4</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/p.tm/Desktop/IS3106_assignment/RedditClone/RedditClone-war/src/java/managedBean/PostManagedBean.java</file>
-            <file>file:/Users/p.tm/Desktop/IS3106_assignment/RedditClone/RedditClone-war/web/postPage.xhtml</file>
-            <file>file:/Users/p.tm/Desktop/IS3106_assignment/RedditClone/RedditClone-war/web/settings/createPost.xhtml</file>
-            <file>file:/Users/p.tm/Desktop/IS3106_assignment/RedditClone/RedditClone-war/web/profile.xhtml</file>
-            <file>file:/Users/p.tm/Desktop/IS3106_assignment/RedditClone/RedditClone-war/web/r/CommunityPage.xhtml</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/login.xhtml</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/postPage.xhtml</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/register.xhtml</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/settings/userSettings.xhtml</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/WEB-INF/web.xml</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/resources/css/default.css</file>
+            <file>file:/Users/p.tm/Desktop/IS3106_assignment2/RedditClone-Bootstrap-JavaEE/RedditClone/RedditClone-war/web/layout.xhtml</file>
         </group>
     </open-files>
 </project-private>
